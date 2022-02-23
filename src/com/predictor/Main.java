@@ -162,7 +162,7 @@ public class Main {
                 } else {
                     System.out.println(command + " is an invalid command.");
                 }
-            } catch (NullSummonerException | NullWeightException e) {
+            } catch (FnException | NullSummonerException | NullWeightException e) {
                 System.out.println(e.getMessage());
             }
 
@@ -495,7 +495,8 @@ public class Main {
     }
 
     // Initializes a new weight and list of validation accuracies.
-    private static void initWeight() throws NullWeightException {
+    private static void initWeight()
+            throws FnException, NullWeightException {
         String featType;
         int teamType;
         validationAccuracies = new ArrayList<>();
@@ -972,7 +973,8 @@ public class Main {
 
     // Sets up the weight's activation function
     // if its model is a neural network.
-    private static void setUpActivationFunction() throws NullWeightException {
+    private static void setUpActivationFunction()
+            throws FnException, NullWeightException {
         String userInput;
         checkIfNullWeight();
 
@@ -1164,7 +1166,8 @@ public class Main {
     }
 
     // Sets up the model that'll be used with the weight.
-    private static void setUpModel() throws NullWeightException {
+    private static void setUpModel()
+            throws FnException, NullWeightException {
         String userInput;
         checkIfNullWeight();
 
@@ -1314,7 +1317,8 @@ public class Main {
     }
 
     // Sets up the weight.
-    private static void setUpWeight() throws NullWeightException {
+    private static void setUpWeight()
+            throws FnException, NullWeightException {
         String userInput;
         boolean useCurrent = true;
 
@@ -1381,7 +1385,7 @@ public class Main {
     // Trains the weight on a subset of the loaded summoner's processed
     // matches and prints the total loss and training accuracy for each epoch.
     private static void train()
-            throws NullSummonerException, NullWeightException {
+            throws FnException, NullSummonerException, NullWeightException {
         LoLMatch lastProcessedMatch;
         String lastPatch, userInput = "yes";
         checkIfNullSummoner();
