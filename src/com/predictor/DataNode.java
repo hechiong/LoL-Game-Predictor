@@ -1,6 +1,6 @@
 package com.predictor;
 
-public class DataNode {
+public class DataNode extends Node {
 
     //
 }

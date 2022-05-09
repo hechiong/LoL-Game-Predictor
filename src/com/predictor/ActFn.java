@@ -11,7 +11,7 @@ public class ActFn extends Fn {
 
     // Constructor for an activation function.
     public ActFn(String actFn) throws FnException {
-        if (isValidActFn(actFn))  {
+        if (!isValidActFn(actFn))  {
             throw new FnException(actFn + " isn't a valid activation "
                     + "function.");
         }

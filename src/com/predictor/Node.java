@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Node {
 
-    protected final ArrayList<Node> children = new ArrayList<>();
     protected final ArrayList<FunctionNode> parents = new ArrayList<>();
     protected Vec[] m;
 
@@ -27,24 +26,15 @@ public class Node {
         }
     }
 
-    // Adds a child node to this node.
-    public void addChild(Node n) {
-        children.add(n);
-    }
-
     // Adds a parent node to this node.
     public void addParent(FunctionNode n) {
         parents.add(n);
+        n.children.add(this);
     }
 
     // Returns the value at some column and row of this node's matrix.
     public double get(int col, int row) {
         return m[col].get(row);
-    }
-
-    // Returns a copy of the list of parents of this node.
-    public ArrayList<Node> getChildren() {
-        return new ArrayList<>(children);
     }
 
     // Returns a copy of the list of parents of this node.
@@ -68,7 +58,7 @@ public class Node {
     }
 
     // Returns whether this node is a child of the node or not.
-    public boolean isChildOf(Node n) {
+    public boolean isChildOf(FunctionNode n) {
         return n.children.contains(this);
     }
 

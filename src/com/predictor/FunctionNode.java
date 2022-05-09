@@ -1,19 +1,46 @@
 package com.predictor;
 
+import java.util.ArrayList;
+
 public class FunctionNode extends Node {
 
+    protected final ArrayList<Node> children = new ArrayList<>();
     private final String fn;
+    private boolean computed = false;
 
-    // Constructor for a function with node argument(s).
-    public FunctionNode(String fn, Node... nodes)
-            throws FnException, NodeException {
-        Node n0, n1;
-        int numNodes = nodes.length;
+    // Constructor for a node associated with a function.
+    public FunctionNode(String fn) throws FnException {
         this.fn = fn;
+
+        if (!ActFn.isValidActFn(fn) && !Fn.isValidFn(fn)) {
+            throw new FnException("Nodes can't be created with invalid " +
+                    "functions.");
+        }
+    }
+
+    // Adds a child node to this function node.
+    public void addChild(Node n) {
+        if ((Fn.isValidFn(fn) && children.size() < 1)
+                || (fn.equals("dot") && children.size() < 2)
+                || fn.equals("add")) {
+            children.add(n);
+            n.parents.add(this);
+        }
+    }
+
+    // Computes the vector this function node will represent
+    // based on the function it represents and its children nodes.
+    public Vec[] compute() throws FnException, NodeException {
+        if (computed) {
+            return m;
+        }
+
+        Node n0, n1;
+        int numNodes = children.size();
 
         if (ActFn.isValidActFn(fn) && numNodes == 1) {
             ActFn actFn = new ActFn(fn);
-            n0 = nodes[0];
+            n0 = children.get(0);
             m = new Vec[n0.numCols()];
 
             for (int i = 0; i < numCols(); i++) {
@@ -24,12 +51,9 @@ public class FunctionNode extends Node {
                 }
                 actFn.accept(m[i]);
             }
-
-            addChild(n0);
-            n0.addParent(this);
         } else if (Fn.isValidFn(fn) && numNodes > 1) {
-            n0 = nodes[0];
-            n1 = nodes[1];
+            n0 = children.get(0);
+            n1 = children.get(1);
 
             if (fn.equals("add")) {
                 m = new Vec[n0.numCols()];
@@ -37,7 +61,7 @@ public class FunctionNode extends Node {
                     m[i] = new Vec(n0.numRows());
                 }
 
-                for (Node n : nodes) {
+                for (Node n : children) {
                     if (!hasEqualDims(n)) {
                         throw(new NodeException("Nodes added together must "
                                 + " have equal dimensions."));
@@ -71,14 +95,16 @@ public class FunctionNode extends Node {
                 throw(new NodeException("Only valid operations with an "
                         + "appropriate number of node inputs can be used."));
             }
-
-            for (Node n : nodes) {
-                addChild(n);
-                n.addParent(this);
-            }
         } else {
-            throw new NodeException("Invalid nodes can't be created.");
+            throw new NodeException("Computations can't be made for invalid nodes.");
         }
+
+        return m;
+    }
+
+    // Returns a copy of the list of parents of this node.
+    public ArrayList<Node> getChildren() {
+        return new ArrayList<>(children);
     }
 
     // Returns the function this node represents.
@@ -89,6 +115,11 @@ public class FunctionNode extends Node {
     // Returns whether this node is a parent of the node or not.
     public boolean isParentOf(FunctionNode n) {
         return n.parents.contains(this);
+    }
+
+    // Resets this function node by making it not computed yet.
+    public void reset() {
+        computed = false;
     }
 }
 
