@@ -28,8 +28,12 @@ public class Node {
 
     // Adds a parent node to this node.
     public void addParent(FunctionNode n) {
-        parents.add(n);
-        n.children.add(this);
+        if ((ActFn.isValidActFn(n.getFn()) && n.getChildren().size() < 1)
+                || (n.getFn().equals("dot") && n.getChildren().size() < 2)
+                || n.getFn().equals("add")) {
+            parents.add(n);
+            n.children.add(this);
+        }
     }
 
     // Returns the value at some column and row of this node's matrix.

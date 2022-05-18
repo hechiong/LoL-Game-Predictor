@@ -43,29 +43,57 @@ public class NeuralNetwork {
     // For binary classification, use sigmoid activation function for output layer
     // (in project, make it recommended)
 
-    // Default constructor for a neural network with
-    // an activation function for each of its layers.
-    public NeuralNetwork(int numHiddenLayers, int[] hiddenSizes,
-                         FunctionNode hiddenActFn, FunctionNode outputActFn,
-                         DataNode sample) throws FnException {
-        // numParamNodes = 2*numHiddenLayers + 2
-        for (int i = 0; i < numHiddenLayers * 2 + 2; i++) {
+    // Default constructor for a neural network with an activation function
+    // for each of its layers, each layer being of some specified size.
+    public NeuralNetwork(int[] hiddenSizes, DataNode sample,
+                         String hiddenActFn, String outputActFn)
+            throws FnException {
+        if (!ActFn.isValidActFn(hiddenActFn)) {
+            throw new FnException("Only valid activation functions can be used"
+                    + " for the hidden layers.");
+        } else if (!ActFn.isValidActFn(outputActFn)) {
+            throw new FnException("Only valid activation functions can be used"
+                    + " for the output layer.");
+        }
+
+        FunctionNode outputActFnNode = new FunctionNode(outputActFn);
+
+        for (int i = 0; i < hiddenSizes.length * 2 + 2; i++) {
             if (i % 2 == 0) {
+                // adding weight parameter node
                 if (i / 2 == 0) {
-                    // adding weight parameter node
                     paramNodes.add(new ParameterNode(hiddenSizes[i / 2], sample.numCols()));
                 } else {
-                    // adding bias parameter node
                     paramNodes.add(new ParameterNode(hiddenSizes[i / 2], hiddenSizes[(i / 2) - 1]));
                 }
             } else {
+                // adding bias parameter node
                 paramNodes.add(new ParameterNode(hiddenSizes[i / 2], 1));
             }
         }
 
-        for (int i = 0; i < numHiddenLayers + 1; i++) {
-            paramNodes.get(i).addParent(new FunctionNode("dot"));
-            paramNodes.get(i).addParent(new FunctionNode("add"));
+        for (int i = 0; i < hiddenSizes.length + 1; i++) {
+            FunctionNode dotNode = new FunctionNode("dot");
+            FunctionNode addNode = new FunctionNode("add");
+            FunctionNode hiddenActFnNode = new FunctionNode(hiddenActFn);
+            ParameterNode weightNode = paramNodes.get(i * 2);
+            ParameterNode biasNode = paramNodes.get(i * 2 + 1);
+
+            if (i == 0) {
+                sample.addParent(dotNode);
+            } else {
+                paramNodes.get(i * 2 - 1).getParents().get(0).getParents().get(0).addParent(dotNode);
+            }
+
+            weightNode.addParent(dotNode);
+            dotNode.addParent(addNode);
+            biasNode.addParent(addNode);
+
+            if (i != hiddenSizes.length) {
+                addNode.addParent(hiddenActFnNode);
+            } else {
+                addNode.addParent(outputActFnNode);
+            }
         }
     }
 

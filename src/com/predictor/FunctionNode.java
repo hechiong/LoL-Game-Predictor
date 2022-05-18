@@ -12,19 +12,9 @@ public class FunctionNode extends Node {
     public FunctionNode(String fn) throws FnException {
         this.fn = fn;
 
-        if (!ActFn.isValidActFn(fn) && !Fn.isValidFn(fn)) {
+        if (!Fn.isValidFn(fn)) {
             throw new FnException("Nodes can't be created with invalid " +
                     "functions.");
-        }
-    }
-
-    // Adds a child node to this function node.
-    public void addChild(Node n) {
-        if ((Fn.isValidFn(fn) && children.size() < 1)
-                || (fn.equals("dot") && children.size() < 2)
-                || fn.equals("add")) {
-            children.add(n);
-            n.parents.add(this);
         }
     }
 

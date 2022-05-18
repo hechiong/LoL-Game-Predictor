@@ -42,8 +42,9 @@ public class ActFn extends Fn {
 
     // Returns whether the activation function is defined in this class.
     public static boolean contains(String actFn) {
-        return actFn.equals("leaky relu") || actFn.equals("relu")
-                || actFn.equals("sigmoid") || actFn.equals("tanh");
+        return actFn.equals("identity") || actFn.equals("leaky relu")
+                || actFn.equals("relu") || actFn.equals("sigmoid")
+                || actFn.equals("tanh");
     }
 
     // Applies the identity function element-wise on the vector.
