@@ -2,7 +2,7 @@ package com.predictor;
 
 public class ParameterNode extends Node {
 
-    protected Vec[] matrixChanges;
+    private Vec[] matrixChanges;
 
     // Constructor for a parameter node representing a matrix
     // containing some number of rows and columns.

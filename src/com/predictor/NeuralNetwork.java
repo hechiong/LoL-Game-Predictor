@@ -47,7 +47,7 @@ public class NeuralNetwork {
     // for each of its layers, each layer being of some specified size.
     public NeuralNetwork(int[] hiddenSizes, DataNode sample,
                          String hiddenActFn, String outputActFn)
-            throws FnException {
+            throws FnException, NodeException {
         if (!ActFn.isValidActFn(hiddenActFn)) {
             throw new FnException("Only valid activation functions can be used"
                     + " for the hidden layers.");
@@ -56,7 +56,7 @@ public class NeuralNetwork {
                     + " for the output layer.");
         }
 
-        FunctionNode outputActFnNode = new FunctionNode(outputActFn);
+        outputNode = new FunctionNode(outputActFn);
 
         for (int i = 0; i < hiddenSizes.length * 2 + 2; i++) {
             if (i % 2 == 0) {
@@ -92,13 +92,19 @@ public class NeuralNetwork {
             if (i != hiddenSizes.length) {
                 addNode.addParent(hiddenActFnNode);
             } else {
-                addNode.addParent(outputActFnNode);
+                addNode.addParent(outputNode);
             }
         }
     }
 
-    public void forwardPass() {
+    public void forwardPass() throws FnException, NodeException {
+        FunctionNode currentNode = paramNodes.get(0).getParents().get(0);
         Vec paramGrad = new Vec();
+
+        while (currentNode != outputNode) {
+            currentNode.compute();
+            currentNode = currentNode.getParents().get(0);
+        }
     }
 
     // Returns the partial derivative of the output node with

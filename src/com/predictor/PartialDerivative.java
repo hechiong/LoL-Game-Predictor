@@ -30,7 +30,7 @@ public class PartialDerivative {
             return directDerivative(fnNode1, fnNode2, index);
         }
 
-        for (FunctionNode node : fnNode2.parents) {
+        for (FunctionNode node : fnNode2.getParents()) {
             result += chainRuleDerivative(fnNode1, node, index)
                     * directDerivative(node, fnNode2, index);
         }
@@ -59,7 +59,7 @@ public class PartialDerivative {
         if (parentFn.equals("add") || parentFn.equals("identity")) {
             return 1;
         } else if (parentFn.equals("dot")) {
-            Node weightNode = parentNode.children.get(1);
+            Node weightNode = parentNode.getChildren().get(1);
 
             for (int i = 0; i < weightNode.numCols(); i++) {
                 result += weightNode.get(i, index);

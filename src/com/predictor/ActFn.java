@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 public class ActFn extends Fn {
 
-    public static final String[] VALID_ACT_FNS = {"identity", "leaky relu",
+    protected static final String[] VALID_ACT_FNS = {"identity", "leaky relu",
                                                   "relu", "sigmoid", "tanh"};
 
     private final Consumer<Vec> fn;

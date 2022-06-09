@@ -4,10 +4,16 @@ import java.util.function.BiFunction;
 
 public class LossFn extends Fn {
 
+    protected static final String[] VALID_LOSS_FNS = {"logistic", "squared"};
+
     private final BiFunction<Double, Double, Double> fn;
 
     // Constuctor for a loss function.
-    public LossFn(String lossFn) {
+    public LossFn(String lossFn) throws FnException {
+        if (!isValidLossFn(lossFn))  {
+            throw new FnException(lossFn  + " isn't a valid loss function.");
+        }
+
         fnName = lossFn;
         switch (lossFn) {
             case "logistic":
@@ -27,6 +33,16 @@ public class LossFn extends Fn {
     // Returns whether the loss function is defined in this class.
     public static boolean contains(String lossFn) {
         return lossFn.equals("logistic") || lossFn.equals("squared");
+    }
+
+    // Returns whether the function is a valid loss function.
+    public static boolean isValidLossFn(String fn) {
+        for (String validLossFn : VALID_LOSS_FNS) {
+            if (fn.equals(validLossFn)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Applies the logistic loss function on a prediction and an outcome.

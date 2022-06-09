@@ -2,9 +2,7 @@ package com.predictor;
 
 public class Fn {
 
-    public static final String[] VALID_FNS = {"add", "dot", "identity",
-                                              "leaky relu", "relu", "sigmoid",
-                                              "tanh"};
+    public static final String[] VALID_FNS = {"add", "dot"};
 
     protected String fnName;
 
@@ -15,7 +13,7 @@ public class Fn {
                 return true;
             }
         }
-        return false;
+        return ActFn.isValidActFn(fn) || LossFn.isValidLossFn(fn);
     }
 
     // Returns the output of the ReLu function given an

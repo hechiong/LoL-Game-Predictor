@@ -1127,7 +1127,8 @@ public class Main {
     }
 
     // Sets up the weight's loss function.
-    private static void setUpLossFunction() throws NullWeightException {
+    private static void setUpLossFunction()
+            throws FnException, NullWeightException {
         String userInput;
         checkIfNullWeight();
 
