@@ -6,6 +6,7 @@ public class ActFn extends Fn {
 
     protected static final String[] VALID_ACT_FNS = {"identity", "leaky relu",
                                                   "relu", "sigmoid", "tanh"};
+    public static final double LEAKY_RELU_CONSTANT = 0.01;
 
     private final Consumer<Vec> fn;
 
@@ -40,13 +41,6 @@ public class ActFn extends Fn {
         fn.accept(v);
     }
 
-    // Returns whether the activation function is defined in this class.
-    public static boolean contains(String actFn) {
-        return actFn.equals("identity") || actFn.equals("leaky relu")
-                || actFn.equals("relu") || actFn.equals("sigmoid")
-                || actFn.equals("tanh");
-    }
-
     // Applies the identity function element-wise on the vector.
     private void identity(Vec v) {}
 
@@ -63,7 +57,7 @@ public class ActFn extends Fn {
     // Applies the leaky ReLU function element-wise on the vector.
     private void leakyRelu(Vec v) {
         for (int i = 0; i < v.length(); i++) {
-            v.set(i, relu(0.01, v.get(i)));
+            v.set(i, relu(LEAKY_RELU_CONSTANT, v.get(i)));
         }
     }
 
@@ -74,6 +68,38 @@ public class ActFn extends Fn {
         }
     }
 
+    // Returns the output of the ReLU function given an
+    // input and a scalar in case the input is negative.
+    public static double relu(double scalar, double x) {
+        if (x < 0) {
+            return scalar * x;
+        }
+        return x;
+    }
+
+    // Returns the output of the derivative
+    // of the ReLU function given an input.
+    public static double reluDerivative(String reluType, double x) {
+        if (reluType.equals("leaky") && x <= 0) {
+            return LEAKY_RELU_CONSTANT;
+        } else if (reluType.equals("") && x <= 0) {
+            return 0;
+        }
+        return 1;
+    }
+
+    // Returns the output vector of the gradient of
+    // the ReLU function given an input vector.
+    public static Vec reluGradient(String reluType, Vec v) {
+        Vec resultVector = v.copy();
+
+        for (int i = 0; i < v.length(); i++) {
+            resultVector.set(i, reluDerivative(reluType, v.get(i)));
+        }
+
+        return resultVector;
+    }
+
     // Applies the sigmoid function element-wise on the vector.
     private void sigmoid(Vec v) {
         for (int i = 0; i < v.length(); i++) {
@@ -81,11 +107,57 @@ public class ActFn extends Fn {
         }
     }
 
+    // Returns the output of the sigmoid function given an input.
+    public static double sigmoid(double x) {
+        return 1 / (1 + Math.exp(-x));
+    }
+
+    // Returns the output of the derivative
+    // of the sigmoid function given an input.
+    public static double sigmoidDerivative(double x) {
+        return sigmoid(x) * (1 - sigmoid(x));
+    }
+
+    // Returns the output vector of the gradient of
+    // the sigmoid function given an input vector.
+    public static Vec sigmoidGradient(Vec v) {
+        Vec resultVector = v.copy();
+
+        for (int i = 0; i < v.length(); i++) {
+            resultVector.set(i, sigmoidDerivative(v.get(i)));
+        }
+
+        return resultVector;
+    }
+
     // Applies the hyperbolic tangent function element-wise on the vector.
     private void tanh(Vec v) {
         for (int i = 0; i < v.length(); i++) {
             v.set(i, tanh(v.get(i)));
         }
+    }
+
+    // Returns the output of the hyperbolic tangent function given an input.
+    public static double tanh(double x) {
+        return (2 / (1 + Math.exp(-x * 2))) - 1;
+    }
+
+    // Returns the output of the derivative of the
+    // hyperbolic tangent function given an input.
+    public static double tanhDerivative(double x) {
+        return 1 - Math.pow(tanh(x), 2);
+    }
+
+    // Returns the output vector of the gradient of the
+    // hyperbolic tangent function given an input vector.
+    public static Vec tanhGradient(Vec v) {
+        Vec resultVector = v.copy();
+
+        for (int i = 0; i < v.length(); i++) {
+            resultVector.set(i, tanhDerivative(v.get(i)));
+        }
+
+        return resultVector;
     }
 
     // Returns the String representation of this activation function.

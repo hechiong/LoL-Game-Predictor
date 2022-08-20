@@ -19,20 +19,19 @@ public class ActFnNode extends FunctionNode {
             return m;
         }
 
+        ActFn actFn;
         Node n0;
         int numNodes = getChildren().size();
 
         if (numNodes == 1) {
-            ActFn actFn = new ActFn(getFn());
+            actFn = new ActFn(getFn());
             n0 = getChildren().get(0);
             m = new Vec[n0.numRows()];
 
             for (int i = 0; i < numRows(); i++) {
                 m[i] = new Vec(n0.numCols());
 
-                for (int j = 0; j < numCols(); j++) {
-                    m[i].set(j, n0.get(i, j));
-                }
+                setRow(i, n0.getRow(i));
                 actFn.accept(m[i]);
             }
 

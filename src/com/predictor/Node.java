@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 public class Node {
 
+    protected final ArrayList<Node> children = new ArrayList<>();
     protected final ArrayList<FunctionNode> parents = new ArrayList<>();
+    protected String fn = "";
     protected Vec[] m;
 
     // Default constructor for a node representing
@@ -42,6 +44,11 @@ public class Node {
         return m[row].get(col);
     }
 
+    // Returns a copy of the list of parents of this node.
+    public ArrayList<Node> getChildren() {
+        return new ArrayList<>(children);
+    }
+
     // Returns the specified column of this node's matrix.
     public Vec getCol(int col) {
         Vec column = new Vec(numRows());
@@ -51,6 +58,11 @@ public class Node {
         }
 
         return column;
+    }
+
+    // Returns the function this node represents.
+    public String getFn() {
+        return fn;
     }
 
     // Returns the matrix this node represents.
@@ -98,6 +110,25 @@ public class Node {
         return n.getChildren().contains(this);
     }
 
+    // Returns a data node representing the result of
+    // applying matrix multiplication on two nodes' matrices.
+    public static DataNode nodeMultiply(Node n0, Node n1) {
+        assert n0.numCols() == n1.numRows(): "Node multiplication requires "
+                + "valid dimensions from both nodes.";
+
+        DataNode resultNode = new DataNode(n0.numRows(), n1.numCols());
+
+        for (int i = 0; i < n0.numRows(); i++) {
+            for (int j = 0; j < n1.numCols(); j++) {
+                for (int k = 0; k < n0.numCols(); k++) {
+                    resultNode.set(i, j, n0.get(i, k) * n1.get(k, j));
+                }
+            }
+        }
+
+        return resultNode;
+    }
+
     // Returns the number of columns of this node's matrix.
     public int numCols() {
         return m[0].length();
@@ -111,5 +142,19 @@ public class Node {
     // Sets the value at some column and row of this node's matrix.
     public void set(int row, int col, double value) {
         m[row].set(col, value);
+    }
+
+    // Sets a column of this node's matrix to be equivalent to the vector.
+    public void setCol(int col, Vec v) {
+        for (int i = 0; i < numRows(); i++) {
+            set(i, col, v.get(i));
+        }
+    }
+
+    // Sets a row of this node's matrix to be equivalent to the vector.
+    public void setRow(int row, Vec v) {
+        for (int i = 0; i < numCols(); i++) {
+            set(row, i, v.get(i));
+        }
     }
 }

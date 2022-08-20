@@ -1,11 +1,7 @@
 package com.predictor;
 
-import java.util.ArrayList;
-
 public class FunctionNode extends Node {
 
-    protected final ArrayList<Node> children = new ArrayList<>();
-    private final String fn;
     protected boolean computed = false;
 
     // Constructor for a node associated with a function.
@@ -86,23 +82,13 @@ public class FunctionNode extends Node {
         return m;
     }
 
-    // Returns a copy of the list of parents of this node.
-    public ArrayList<Node> getChildren() {
-        return new ArrayList<>(children);
-    }
-
-    // Returns the function this node represents.
-    public String getFn() {
-        return fn;
-    }
-
     // Returns whether the contents of this function node is computed or not.
     public boolean isComputed() {
         return computed;
     }
 
     // Returns whether this node is a parent of the node or not.
-    public boolean isParentOf(FunctionNode n) {
+    public boolean isParentOf(Node n) {
         return n.getParents().contains(this);
     }
 

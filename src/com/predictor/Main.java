@@ -983,9 +983,10 @@ public class Main {
                     + "'sigmoid', or 'tanh'): ");
             userInput = keyboard.nextLine().toLowerCase();
 
-            while (!ActFn.contains(userInput)) {
-                System.out.print("Only valid activation functions are 'leaky "
-                        + "relu', 'relu', 'sigmoid', and 'tanh': ");
+            while (!ActFn.isValidActFn(userInput)) {
+                System.out.print("Only valid activation functions are "
+                        + "'identity', 'leaky relu', 'relu', 'sigmoid', and "
+                        + "'tanh': ");
                 userInput = keyboard.nextLine().toLowerCase();
             }
 
@@ -1135,7 +1136,7 @@ public class Main {
         System.out.print("Loss function ('logistic' or 'squared'): ");
         userInput = keyboard.nextLine().toLowerCase();
 
-        while (!LossFn.contains(userInput)) {
+        while (!LossFn.isValidLossFn(userInput)) {
             System.out.print("Only valid loss functions are 'logistic' "
                         + "and 'squared': ");
             userInput = keyboard.nextLine().toLowerCase();

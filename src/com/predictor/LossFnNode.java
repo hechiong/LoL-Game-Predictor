@@ -19,11 +19,12 @@ public class LossFnNode extends FunctionNode {
             return m;
         }
 
+        LossFn lossFn;
         Node n0, n1;
         int numNodes = getChildren().size();
 
         if (numNodes == 2) {
-            LossFn lossFn = new LossFn(getFn());
+            lossFn = new LossFn(getFn());
             n0 = getChildren().get(0);
             n1 = getChildren().get(1);
             m = new Vec[n0.numRows()];
@@ -31,7 +32,7 @@ public class LossFnNode extends FunctionNode {
             for (int i = 0; i < numRows(); i++) {
                 m[i] = new Vec(n0.numCols());
 
-                m[i].set(0, lossFn.apply(n0.get(i, 0), n1.get(i, 0)));
+                setRow(i, lossFn.apply(n0.getRow(i), n1.getRow(i)));
             }
 
             computed = true;

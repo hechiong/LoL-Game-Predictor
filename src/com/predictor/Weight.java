@@ -59,7 +59,7 @@ public class Weight extends Vec {
     // given a game sample and its outcome.
     private void addLRChanges(Vec gameSample, double outcome) {
         double prediction = dot(gameSample);
-        double multiplier = learningRate * (outcome - Fn.sigmoid(prediction));
+        double multiplier = learningRate * (outcome - ActFn.sigmoid(prediction));
 
         gameSample.scale(multiplier);
         weightChanges.add(gameSample);
@@ -153,7 +153,7 @@ public class Weight extends Vec {
             case BP:
                 return dot(sample);
             case LR:
-                return Fn.sigmoid(dot(sample));
+                return ActFn.sigmoid(dot(sample));
             case NN:
                 return predictWithNeuralNetwork(sample);
             default:
@@ -181,7 +181,7 @@ public class Weight extends Vec {
             x2.set(h, 1);
 
             // second layer
-            prediction = Fn.sigmoid(x2.dot(w2) + b2);
+            prediction = ActFn.sigmoid(x2.dot(w2) + b2);
         }
 
         return prediction;
@@ -272,7 +272,7 @@ public class Weight extends Vec {
             }
             x2.add(b1);
             actFn(x2);
-            prediction = Fn.sigmoid(x2.dot(w2) + b2);
+            prediction = ActFn.sigmoid(x2.dot(w2) + b2);
             error = prediction - outcome;
             gradient = error * prediction * (1 - prediction);
 

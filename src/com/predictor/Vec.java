@@ -6,7 +6,7 @@ public class Vec implements Serializable {
 
     protected double[] vec;
 
-    // Default constructor for a vector.
+    // Default constructor for a vector containing one element.
     public Vec() {
         vec = new double[1];
     }
