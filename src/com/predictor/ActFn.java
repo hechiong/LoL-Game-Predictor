@@ -4,23 +4,22 @@ import java.util.function.Consumer;
 
 public class ActFn extends Fn {
 
-    protected static final String[] VALID_ACT_FNS = {"identity", "leaky relu",
+    private static final String[] VALID_ACT_FNS = {"identity", "leaky relu",
                                                   "relu", "sigmoid", "tanh"};
-    public static final double LEAKY_RELU_CONSTANT = 0.01;
+    private static final double LEAKY_RELU_CONSTANT = 0.01;
 
     private final Consumer<Vec> fn;
 
     // Constructor for an activation function.
     public ActFn(String actFn) throws FnException {
-        if (!isValidActFn(actFn))  {
-            throw new FnException(actFn + " isn't a valid activation "
-                    + "function.");
-        }
-
         fnName = actFn;
+
         switch (actFn) {
             case "leaky relu":
                 fn = this::leakyRelu;
+                break;
+            case "identity":
+                fn = this::identity;
                 break;
             case "relu":
                 fn = this::relu;
@@ -32,7 +31,8 @@ public class ActFn extends Fn {
                 fn = this::tanh;
                 break;
             default:
-                fn = this::identity;
+                throw new FnException(actFn + " isn't a valid activation "
+                        + "function.");
         }
     }
 

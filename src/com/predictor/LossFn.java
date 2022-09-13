@@ -4,24 +4,24 @@ import java.util.function.BiFunction;
 
 public class LossFn extends Fn {
 
-    protected static final String[] VALID_LOSS_FNS = {"logistic", "squared"};
+    private static final String[] VALID_LOSS_FNS = {"logistic", "squared"};
 
     private final BiFunction<Vec, Vec, Vec> fn;
 
-    // Constuctor for a loss function.
+    // Constructor for a loss function.
     public LossFn(String lossFn) throws FnException {
-        if (!isValidLossFn(lossFn))  {
-            throw new FnException(lossFn  + " isn't a valid loss function.");
-        }
-
         fnName = lossFn;
+
         switch (lossFn) {
             case "logistic":
                 fn = this::logistic;
                 break;
-            default:
+            case "squared":
                 fn = this::squared;
-                fnName = "squared";
+                break;
+            default:
+                throw new FnException(lossFn  + " isn't a valid loss "
+                        + "function.");
         }
     }
 

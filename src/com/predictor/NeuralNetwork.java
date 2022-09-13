@@ -1,25 +1,25 @@
 package com.predictor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NeuralNetwork {
 
+    private final DataNode sampleNode;
     private final ActFnNode outputNode;
     private final LossFnNode lossNode;
-    private final ArrayList<ParameterNode> paramNodes = new ArrayList<>();
+    private final ParameterNode[] paramNodes;
+    private final DataNode[] paramChanges;
+    private final WeightInit wtInit;
     private final HashMap<Node, HashMap<Node, DataNode>> gradientCache =
             new HashMap<>();
-    private DataNode sampleNode;
-    private DataNode[] nodesChanges;
+
+    private int batchSize = 0;
     private double learningRate = 1;
 
     // output layer
     // Regression: linear (because values are unbounded)
     // Classification: softmax (simple sigmoid works too but softmax works better)
     // Will let user choose, but will offer above recommendations as print statements
-
-    // Remember to include loss function and its derivative wrt parameters in backward pass
 
     // When using the ReLU function for hidden layers, it is a good practice
     // to use a “He Normal” or “He Uniform” weight initialization and scale
@@ -48,14 +48,13 @@ public class NeuralNetwork {
     // For binary classification, use sigmoid activation function for output layer
     // (in project, make it recommended)
 
-    // how to set up nodesChanges and iterating over samples
-
-    // implement initializing/preprocessing data
+    // implement preprocessing data
 
     // Default constructor for a neural network with an activation function
     // for each of its layers, each layer being of some specified size.
     public NeuralNetwork(int[] hiddenSizes, DataNode sample, DataNode outcome,
-                         String hiddenActFn, String lossFn, String outputActFn)
+                         String hiddenActFn, String lossFn, String outputActFn,
+                         String weightInit)
             throws FnException, NodeException {
         if (!ActFn.isValidActFn(hiddenActFn)) {
             throw new FnException("Only valid activation functions can be used"
@@ -69,31 +68,44 @@ public class NeuralNetwork {
         outputNode = new ActFnNode(outputActFn);
         lossNode = new LossFnNode(lossFn);
 
+        paramNodes = new ParameterNode[hiddenSizes.length * 2 + 2];
+        paramChanges = new DataNode[hiddenSizes.length * 2 + 2];
+
+        wtInit = new WeightInit(weightInit);
+
+        // preparing parameters and their respective changes
         for (int i = 0; i < hiddenSizes.length * 2 + 2; i++) {
             if (i % 2 == 0) {
-                // adding weight parameter node
+                // adding weight parameter node and its respective changes
                 if (i / 2 == 0) {
-                    paramNodes.add(new ParameterNode(hiddenSizes[i / 2], sample.numCols()));
+                    paramNodes[i] = new ParameterNode(hiddenSizes[i / 2], sample.numCols());
+                    paramChanges[i] = new DataNode(hiddenSizes[i / 2], sample.numCols());
                 } else {
-                    paramNodes.add(new ParameterNode(hiddenSizes[i / 2], hiddenSizes[(i / 2) - 1]));
+                    paramNodes[i] = new ParameterNode(hiddenSizes[i / 2], hiddenSizes[(i / 2) - 1]);
+                    paramChanges[i] = new DataNode(hiddenSizes[i / 2], hiddenSizes[(i / 2) - 1]);
                 }
             } else {
-                // adding bias parameter node
-                paramNodes.add(new ParameterNode(hiddenSizes[i / 2], 1));
+                // adding bias parameter node and its respective changes
+                paramNodes[i] = new ParameterNode(hiddenSizes[i / 2], 1);
+                paramChanges[i] = new DataNode(hiddenSizes[i / 2], 1);
             }
+
+            // initializing each weight
+            wtInit.accept(paramNodes[i]);
         }
 
+        // connecting nodes
         for (int i = 0; i < hiddenSizes.length + 1; i++) {
             FunctionNode dotNode = new FunctionNode("dot");
             FunctionNode addNode = new FunctionNode("add");
             ActFnNode hiddenActFnNode = new ActFnNode(hiddenActFn);
-            ParameterNode weightNode = paramNodes.get(i * 2);
-            ParameterNode biasNode = paramNodes.get(i * 2 + 1);
+            ParameterNode weightNode = paramNodes[i * 2];
+            ParameterNode biasNode = paramNodes[i * 2 + 1];
 
             if (i == 0) {
                 sampleNode.addParent(dotNode);
             } else {
-                paramNodes.get(i * 2 - 1).getParents().get(0).getParents().get(0).addParent(dotNode);
+                paramNodes[i * 2 - 1].getParents().get(0).getParents().get(0).addParent(dotNode);
             }
 
             weightNode.addParent(dotNode);
@@ -118,6 +130,7 @@ public class NeuralNetwork {
         DataNode chainGradNode, directGradNode, resultNode;
         Node parentNode = outputNode;
         Node childNode = parentNode.getChildren().get(0);
+        ParameterNode paramNode;
 
         while (childNode != sampleNode) {
             chainGradNode = gradientCache.get(lossNode).get(parentNode);
@@ -147,18 +160,19 @@ public class NeuralNetwork {
             childNode = childNode.getChildren().get(0);
         }
 
-        for (ParameterNode paramNode : paramNodes) {
+        for (int i = 0; i < paramNodes.length; i++) {
+            paramNode = paramNodes[i];
             parentNode = paramNode.getParents().get(0);
             chainGradNode = gradientCache.get(lossNode).get(parentNode);
             directGradNode = gradientCache.get(parentNode).get(paramNode);
             resultNode = new DataNode(paramNode.numRows(), paramNode.numCols());
 
             if (parentNode.getFn().equals("dot")) {
-                for (int i = 0; i < resultNode.numRows(); i++) {
-                    for (int j = 0; j < resultNode.numCols(); j++) {
-                        resultNode.set(i, j,
-                                chainGradNode.get(0, j)
-                                        * directGradNode.get(0, i));
+                for (int j = 0; j < resultNode.numRows(); j++) {
+                    for (int k = 0; k < resultNode.numCols(); k++) {
+                        resultNode.set(j, k,
+                                chainGradNode.get(0, k)
+                                        * directGradNode.get(0, j));
                     }
                 }
             } else {
@@ -171,6 +185,8 @@ public class NeuralNetwork {
 
             gradientCache.putIfAbsent(lossNode, new HashMap<>());
             gradientCache.get(lossNode).put(paramNode, resultNode);
+
+            paramChanges[i].add(resultNode);
         }
     }
 
@@ -195,6 +211,16 @@ public class NeuralNetwork {
         }
     }
 
+    // Returns the batch size this neural network uses.
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    // Returns the learning rate this neural network uses.
+    public double getLearningRate() {
+        return learningRate;
+    }
+
     // Puts a gradient in the gradient cache.
     private void putGradient(FunctionNode parentNode, Node childNode)
             throws NodeException {
@@ -203,29 +229,60 @@ public class NeuralNetwork {
                 childNode, new Gradient(parentNode, childNode).compute());
     }
 
-    // Sets the learning rate of this neural network.
+    // Processes the list of samples into this neural network.
+    public void processSamples(Vec[] samples)
+            throws FnException, NeuralNetworkException, NodeException {
+        Vec sample;
+
+        for (int i = 0; i < samples.length; i++) {
+            sample = samples[i];
+
+            if (sample.length() != sampleNode.numCols()) {
+                throw new NeuralNetworkException("The size of the sample vector "
+                        + "must match the size of the sample node.");
+            }
+
+            sampleNode.setRow(0, sample);
+
+            forwardPass();
+            backwardPass();
+
+            if (i % batchSize == batchSize - 1 || i == samples.length - 1) {
+                updateParameters();
+            }
+        }
+    }
+
+    // Resets the changes that would be made to the parameters.
+    private void resetParamChanges() {
+        for (DataNode paramChange : paramChanges) {
+            for (int i = 0; i < paramChange.numRows(); i++) {
+                paramChange.setRow(i, new Vec(paramChange.numCols()));
+            }
+        }
+    }
+
+    // Sets the batch size this neural network uses.
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    // Sets the learning rate this neural network uses.
     public void setLearningRate(double learningRate) {
         this.learningRate = learningRate;
     }
 
-    // Updates the parameters of the neural network by using gradient descent.
-    public void updateParameters() {
-        // consider different types of gradient descent
-        DataNode nodeChanges;
-        double currParamElem, currChangeElem;
+    // Updates the parameters of the neural network.
+    private void updateParameters() throws NodeException {
+        DataNode paramChange;
+        ParameterNode paramNode;
 
-        for (ParameterNode paramNode : paramNodes) {
-            nodeChanges = gradientCache.get(lossNode).get(paramNode);
+        for (int i = 0; i < paramNodes.length; i++) {
+            paramNode = paramNodes[i];
+            paramChange = paramChanges[i];
 
-            for (int i = 0; i < paramNode.numRows(); i++) {
-                for (int j = 0; j < paramNode.numCols(); j++) {
-                    currParamElem = paramNode.get(i, j);
-                    currChangeElem = nodeChanges.get(i, j);
-
-                    paramNode.set(i, j,
-                            currParamElem - learningRate * currChangeElem);
-                }
-            }
+            paramChange.scale(-learningRate);
+            paramNode.add(paramChange);
         }
     }
 }
