@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 
 public class LossFn extends Fn {
 
-    private static final String[] VALID_LOSS_FNS = {"logistic", "squared"};
+    private static final String[] VALID_LOSS_FNS = {"cross-entropy", "log", "squared"};
 
     private final BiFunction<Vec, Vec, Vec> fn;
 
@@ -13,8 +13,9 @@ public class LossFn extends Fn {
         fnName = lossFn;
 
         switch (lossFn) {
-            case "logistic":
-                fn = this::logistic;
+            case "cross-entropy":
+            case "log":
+                fn = this::crossEntropy;
                 break;
             case "squared":
                 fn = this::squared;
@@ -43,7 +44,7 @@ public class LossFn extends Fn {
 
     // Applies the logistic loss function on an outcome vector
     // and a prediction vector, and returns the output vector.
-    private Vec logistic(Vec outcome, Vec prediction) {
+    private Vec crossEntropy(Vec outcome, Vec prediction) {
         Vec resultVector = new Vec(outcome.length());
         double sig;
 
@@ -59,7 +60,7 @@ public class LossFn extends Fn {
 
     // Returns the output of the logistic loss
     // function given an outcome and a prediction.
-    public static double logistic(double outcome, double prediction) {
+    public static double crossEntropy(double outcome, double prediction) {
         double sig = ActFn.sigmoid(prediction);
 
         return -outcome * Math.log(sig) - (1-outcome) * Math.log(1-sig);
@@ -67,7 +68,8 @@ public class LossFn extends Fn {
 
     // Returns the output of the derivative of the logistic loss function
     // (with respect to the prediction) given an outcome and a prediction.
-    public static double logisticDerivative(double outcome, double prediction) {
+    public static double crossEntropyDerivative(
+            double outcome, double prediction) {
         double sig = ActFn.sigmoid(prediction);
 
         return (-outcome/sig + (1-outcome)/(1-sig))
@@ -77,12 +79,13 @@ public class LossFn extends Fn {
     // Returns the output vector of the gradient of the
     // logistic loss function (with respect to the prediction
     // vector) given an outcome vector and a prediction vector.
-    public static Vec logisticGradient(Vec outcome, Vec prediction) {
+    public static Vec crossEntropyGradient(Vec outcome, Vec prediction) {
         Vec resultVector = new Vec(outcome.length());
 
         for (int i = 0; i < resultVector.length(); i++) {
             resultVector.set(
-                    i, logisticDerivative(outcome.get(i), prediction.get(i)));
+                    i, crossEntropyDerivative(
+                            outcome.get(i), prediction.get(i)));
         }
 
         return resultVector;

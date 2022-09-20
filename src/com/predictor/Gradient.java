@@ -18,25 +18,6 @@ public class Gradient {
         return directGradient(function, variable);
     }
 
-    /*
-    // Returns the gradient of the function node with respect to
-    // the variable node for the backward pass of backpropagation.
-    private DataNode chainRuleGradient(FunctionNode fnNode, Node node)
-            throws NodeException {
-        DataNode resultNode;
-
-        if (fnNode.equals(node) || fnNode.isParentOf(node)) {
-            return directGradient(fnNode, node);
-        }
-
-        for (FunctionNode n : node.getParents()) {
-            resultNode += chainRuleGradient(fnNode, n)
-                    * directGradient(n, node);
-        }
-
-        return resultNode;
-    }*/
-
     // Returns the gradient of the parent function node with respect
     // to the child node for the forward pass of backpropagation.
     private DataNode directGradient(
@@ -87,10 +68,10 @@ public class Gradient {
             for (int i = 0; i < resultNode.numRows(); i++) {
                 if (parentFn.equals("leaky relu")) {
                     resultNode.setRow(i, ActFn.reluGradient("leaky", childNode.getRow(i)));
-                } else if (parentFn.equals("logistic")) {
+                } else if (parentFn.equals("cross-entropy")) {
                     outcomeNode = parentFnNode.getChildren().get(0);
 
-                    resultNode.setRow(i, LossFn.logisticGradient(
+                    resultNode.setRow(i, LossFn.crossEntropyGradient(
                             outcomeNode.getRow(i), childNode.getRow(i)));
                 } else if (parentFn.equals("relu")) {
                     resultNode.setRow(i, ActFn.reluGradient("", childNode.getRow(i)));
@@ -104,9 +85,7 @@ public class Gradient {
                 } else if (parentFn.equals("tanh")) {
                     resultNode.setRow(i, ActFn.tanhGradient(childNode.getRow(i)));
                 } else {
-                    for (int j = 0; j < childNode.numCols(); j++) {
-                        resultNode.set(i, j, 1);
-                    }
+                    resultNode.setRow(i, Identity.gradient(childNode.getRow(i)));
                 }
             }
         }

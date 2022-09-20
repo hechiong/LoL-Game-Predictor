@@ -28,20 +28,6 @@ public class Node {
         }
     }
 
-    // Adds the nodes element-wise and stores the result in this node.
-    public void add(Node n) throws NodeException {
-        if (numCols() != n.numCols() || numRows() != n.numRows()) {
-            throw new NodeException("The nodes' dimensions must match in order"
-                    + " to add them together.");
-        }
-
-        for (int i = 0; i < numRows(); i++) {
-            for (int j = 0; j < numCols(); j++) {
-                set(i, j, get(i, j) + n.get(i, j));
-            }
-        }
-    }
-
     // Adds a parent node to this node.
     public void addParent(FunctionNode n) {
         if ((ActFn.isValidActFn(n.getFn()) && n.getChildren().size() < 1)
@@ -132,15 +118,6 @@ public class Node {
     // Returns the number of rows of this node's matrix.
     public int numRows() {
         return m.length;
-    }
-
-    // Scales this node element-wise by a scalar.
-    public void scale(double scalar) throws NodeException {
-        for (int i = 0; i < numRows(); i++) {
-            for (int j = 0; j < numCols(); j++) {
-                set(i, j, get(i, j) * scalar);
-            }
-        }
     }
 
     // Sets the value at some column and row of this node's matrix.

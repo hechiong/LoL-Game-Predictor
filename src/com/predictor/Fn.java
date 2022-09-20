@@ -1,18 +1,22 @@
 package com.predictor;
 
-public class Fn {
+public abstract class Fn {
 
-    public static final String[] VALID_FNS = {"add", "dot"};
+    private String fnName;
 
-    protected String fnName;
-
-    // Returns whether the function is valid or not.
+    // Returns whether the function is a valid function or not.
     public static boolean isValidFn(String fn) {
-        for (String validFn : VALID_FNS) {
-            if (fn.equals(validFn)) {
-                return true;
-            }
-        }
-        return ActFn.isValidActFn(fn) || LossFn.isValidLossFn(fn);
+        return ActFn.isValidActFn(fn) || LossFn.isValidLossFn(fn)
+                || OperatorFn.isValidOperatorFn(fn);
+    }
+
+    // Returns the name of this function.
+    protected String getFnName() {
+        return fnName;
+    }
+
+    // Sets the name of this function.
+    protected void setFnName(String name) {
+        fnName = name;
     }
 }
