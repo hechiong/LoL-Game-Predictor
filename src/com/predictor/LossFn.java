@@ -2,7 +2,7 @@ package com.predictor;
 
 import java.util.function.BiFunction;
 
-public class LossFn extends Fn {
+public abstract class LossFn extends Fn {
 
     private static final String[] VALID_LOSS_FNS = {"cross-entropy", "log", "squared"};
 

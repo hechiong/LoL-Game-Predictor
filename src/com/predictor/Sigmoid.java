@@ -8,13 +8,13 @@ public class Sigmoid extends ActFn {
     }
 
     // Applies the sigmoid function element-wise on the vector.
-    protected void actFn(Vec v) {
+    protected void accept(Vec v) {
         for (int i = 0; i < v.length(); i++) {
             v.set(i, sigmoid(v.get(i)));
         }
     }
-    // Returns the output of the derivative
-    // of the sigmoid function given an input.
+    // Returns the output of the derivative of the sigmoid
+    // function given and with respect to an input.
     protected double derivative(double x) {
         return sigmoid(x) * (1 - sigmoid(x));
     }

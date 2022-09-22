@@ -8,14 +8,14 @@ public class Tanh extends ActFn {
     }
 
     // Applies the hyperbolic tangent function element-wise on the vector.
-    protected void actFn(Vec v) {
+    protected void accept(Vec v) {
         for (int i = 0; i < v.length(); i++) {
             v.set(i, tanh(v.get(i)));
         }
     }
 
-    // Returns the output of the derivative of the
-    // hyperbolic tangent function given an input.
+    // Returns the output of the derivative of the hyperbolic
+    // tangent function given and with respect to an input.
     protected double derivative(double x) {
         return 1 - Math.pow(tanh(x), 2);
     }

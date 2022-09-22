@@ -10,14 +10,14 @@ public class LeakyReLU extends ReLU {
     }
 
     // Applies the leaky ReLU function element-wise on the vector.
-    protected void actFn(Vec v) {
+    protected void accept(Vec v) {
         for (int i = 0; i < v.length(); i++) {
             v.set(i, relu(LEAKY_RELU_CONSTANT, v.get(i)));
         }
     }
 
-    // Returns the output of the derivative of
-    // the leaky ReLU function given an input.
+    // Returns the output of the derivative of the leaky
+    // ReLU function given and with respect to an input.
     protected double derivative(double x) {
         if (x <= 0) {
             return LEAKY_RELU_CONSTANT;

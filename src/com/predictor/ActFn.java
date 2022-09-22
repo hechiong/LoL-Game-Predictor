@@ -1,27 +1,19 @@
 package com.predictor;
 
-import java.util.function.Consumer;
-
 public abstract class ActFn extends Fn {
 
     private static final String[] VALID_ACT_FNS = {"identity", "leaky relu",
                                                   "relu", "sigmoid", "tanh"};
 
     // Applies this activation function on the vector.
-    protected void accept(Vec v) {
-        Consumer<Vec> actFn = this::actFn;
-        actFn.accept(v);
-    }
+    protected abstract void accept(Vec v);
 
-    // Applies the activation function element-wise on the vector.
-    protected abstract void actFn(Vec v);
-
-    // Returns the output of the derivative of
-    // the activation function given an input.
+    // Returns the output of the derivative of this activation
+    // function given and with respect to an input.
     protected abstract double derivative(double x);
 
-    // Returns the output vector of the gradient of
-    // the activation function given an input vector.
+    // Returns the output vector of the gradient of this activation
+    // function given and with respect to an input vector.
     protected Vec gradient(Vec v) {
         Vec resultVector = v.copy();
 

@@ -12,10 +12,10 @@ public class Identity extends ActFn {
      * Applies the identity function element-wise on the vector.
      */
     @Override
-    protected void actFn(Vec v) {}
+    protected void accept(Vec v) {}
 
-    // Returns the output of the derivative
-    // of the identity function given an input.
+    // Returns the output of the derivative of the identity
+    // function given and with respect to an input.
     protected double derivative(double x) {
         return 1;
     }
