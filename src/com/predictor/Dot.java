@@ -7,49 +7,95 @@ public class Dot extends OperatorFn {
         setFnName("dot");
     }
 
-    // Applies the operator function on the operands.
-    protected Vec[] apply(Vec[]... operands) {
-        m = new Vec[n0.numRows()];
-        for (int i = 0; i < m.length; i++) {
-            m[i] = new Vec(n1.numCols());
+    // Applies the dot operator function on the two operands.
+    protected Vec[] apply(Vec[]... operands) throws OperatorFnException {
+        Vec[] dotMatrix;
+        Vec[] firstOperand;
+        Vec[] secondOperand;
+        double elem1;
+        double elem2;
+        int numCols;
+        int numRows;
+
+        areValidDimensions(operands);
+
+        firstOperand = operands[0];
+        secondOperand = operands[1];
+        numRows = firstOperand.length;
+        numCols = secondOperand[0].length();
+
+        dotMatrix = new Vec[numRows];
+        for (int i = 0; i < numRows; i++) {
+            dotMatrix[i] = new Vec(numCols);
         }
 
-        if (n0.numCols() == n1.numRows()) {
-            for (int i = 0; i < numRows(); i++) {
-                for (int j = 0; j < numCols(); j++) {
-                    for (int k = 0; k < n0.numCols(); k++) {
-                        set(i, j, get(i, j) + n0.get(i, k) * n1.get(k, j));
-                    }
+
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                for (int k = 0; k < firstOperand[0].length(); k++) {
+                    elem1 = firstOperand[i].get(k);
+                    elem2 = secondOperand[k].get(j);
+
+                    dotMatrix[i].set(j, dotMatrix[i].get(j) + elem1 * elem2);
                 }
             }
-        } else {
-            throw new NodeException("Nodes involved in matrix "
-                    + "multiplication must have valid dimensions.");
         }
+
+        return dotMatrix;
     }
 
-    // Returns the output matrix of the gradient of the dot
-    // function given some operands and with respect to an operand.
-    protected Vec[] gradient(int index, Vec[]... operands) {
-        Node dataNode = parentFnNode.getChildren().get(0);
-        Node weightNode = parentFnNode.getChildren().get(1);
+    // Returns whether the number of columns of the first operand
+    // is equal to the number of rows of the second operand or not.
+    protected boolean areValidDimensions(Vec[]... operands)
+            throws OperatorFnException {
+        int firstOperandNumCols;
+        int secondOperandNumRows;
 
-        if (childNode.equals(dataNode)) {
-            resultNode = new DataNode(weightNode.numCols(), weightNode.numRows());
+        if (hasValidNumberOfOperands(operands)) {
+            throw new DotException("There must be exactly two operands to use "
+                    + "the dot function.");
+        }
 
-            for (int i = 0; i < resultNode.numRows(); i++) {
-                for (int j = 0; j < resultNode.numCols(); j++) {
-                    resultNode.set(i, j, weightNode.get(j, i));
-                }
-            }
-        } else {
-            resultNode = new DataNode(dataNode.numCols(), dataNode.numRows());
+        firstOperandNumCols = operands[0][0].length();
+        secondOperandNumRows = operands[1].length;
 
-            for (int i = 0; i < resultNode.numRows(); i++) {
-                for (int j = 0; j < resultNode.numCols(); j++) {
-                    resultNode.set(i, j, dataNode.get(j, i));
-                }
+        return firstOperandNumCols == secondOperandNumRows;
+    }
+
+    // Returns the output matrix of the gradient of the dot operator
+    // function with respect to an operand given two operands.
+    protected Vec[] gradient(int index, Vec[]... operands)
+            throws OperatorFnException {
+        Vec[] dotGradient;
+        Vec[] oppositeOperand;
+        int numRows;
+        int numCols;
+
+        areValidDimensions(operands);
+        if (index != 0 && index != 1) {
+            throw new DotException("The gradient of the dot operator function "
+                    + "can only be taken with respect to the first or second "
+                    + "operand.");
+        }
+
+        oppositeOperand = operands[1 - index];
+        numRows = oppositeOperand[0].length();
+        numCols = oppositeOperand.length;
+
+        dotGradient = new Vec[numRows];
+        for (int i = 0; i < numRows; i++) {
+            dotGradient[i] = new Vec(numCols);
+
+            for (int j = 0; j < numCols; j++) {
+                dotGradient[i].set(j, oppositeOperand[j].get(i));
             }
         }
+
+        return dotGradient;
+    }
+
+    // Returns whether there are two operands or not.
+    protected boolean hasValidNumberOfOperands(Vec[]... operands) {
+        return operands.length == 2;
     }
 }

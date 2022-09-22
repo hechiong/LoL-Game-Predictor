@@ -14,7 +14,7 @@ public abstract class OperatorFn extends Fn {
             throws OperatorFnException;
 
     // Returns the output matrix of the gradient of this operator
-    // function given some operands and with respect to an operand.
+    // function with respect to an operand given some operands.
     protected abstract Vec[] gradient(int index, Vec[]... operands)
             throws OperatorFnException;
 

@@ -44,7 +44,7 @@ public class Add extends OperatorFn {
 
         if (hasValidNumberOfOperands(operands)) {
             throw new AddException("There must be more than one operand to use"
-                    + " the add function.");
+                    + " the add operator function.");
         }
 
         numRows = operands[0].length;
@@ -62,7 +62,7 @@ public class Add extends OperatorFn {
     }
 
     // Returns the output matrix of the gradient of the add operator
-    // function given some operands and with respect to an operand.
+    // function with respect to an operand given some operands.
     protected Vec[] gradient(int index, Vec[]... operands)
             throws OperatorFnException {
         Vec[] addGradient;
