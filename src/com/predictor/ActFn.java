@@ -9,19 +9,19 @@ public abstract class ActFn extends Fn {
     protected abstract void accept(Vec v);
 
     // Returns the output of the derivative of this activation
-    // function given and with respect to an input.
+    // function with respect to and given an input.
     protected abstract double derivative(double x);
 
     // Returns the output vector of the gradient of this activation
-    // function given and with respect to an input vector.
+    // function with respect to and given an input vector.
     protected Vec gradient(Vec v) {
-        Vec resultVector = v.copy();
+        Vec outputVector = v.copy();
 
-        for (int i = 0; i < v.length(); i++) {
-            resultVector.set(i, derivative(v.get(i)));
+        for (int i = 0; i < outputVector.length(); i++) {
+            outputVector.set(i, derivative(v.get(i)));
         }
 
-        return resultVector;
+        return outputVector;
     }
 
     // Returns whether the function is a valid activation function.

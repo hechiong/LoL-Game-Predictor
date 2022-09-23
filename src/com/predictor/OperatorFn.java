@@ -4,7 +4,8 @@ public abstract class OperatorFn extends Fn {
 
     private static final String[] VALID_OPERATOR_FNS = {"add", "dot"};
 
-    // Applies this operator function on the operands.
+    // Applies this operator function on the
+    // operands and returns the result matrix.
     protected abstract Vec[] apply(Vec[]... operands)
             throws OperatorFnException;
 
@@ -23,7 +24,7 @@ public abstract class OperatorFn extends Fn {
     protected abstract boolean hasValidNumberOfOperands(Vec[]... operands);
 
     // Returns whether the function is a valid operator function.
-    public static boolean isValidOperatorFn(String fn) {
+    protected static boolean isValidOperatorFn(String fn) {
         for (String validOperatorFn : VALID_OPERATOR_FNS) {
             if (fn.equals(validOperatorFn)) {
                 return true;

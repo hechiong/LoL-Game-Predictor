@@ -7,13 +7,17 @@ public class Add extends OperatorFn {
         setFnName("add");
     }
 
-    // Applies the add operator function on the operands.
+    // Applies the add operator function on the
+    // operands and returns the result matrix.
     protected Vec[] apply(Vec[]... operands) throws OperatorFnException {
         Vec[] sumMatrix;
         int numCols;
         int numRows;
 
-        areValidDimensions(operands);
+        if (!areValidDimensions(operands)) {
+            throw new AddException("All of the operands must have the same "
+                    + "dimensions to use the add operator function.");
+        }
 
         numRows = operands[0].length;
         numCols = operands[0][0].length();
@@ -42,7 +46,7 @@ public class Add extends OperatorFn {
         int numRows;
         int numCols;
 
-        if (hasValidNumberOfOperands(operands)) {
+        if (!hasValidNumberOfOperands(operands)) {
             throw new AddException("There must be more than one operand to use"
                     + " the add operator function.");
         }

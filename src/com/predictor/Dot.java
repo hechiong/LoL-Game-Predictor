@@ -7,7 +7,8 @@ public class Dot extends OperatorFn {
         setFnName("dot");
     }
 
-    // Applies the dot operator function on the two operands.
+    // Applies the dot operator function on the
+    // two operands and returns the result matrix.
     protected Vec[] apply(Vec[]... operands) throws OperatorFnException {
         Vec[] dotMatrix;
         Vec[] firstOperand;
@@ -17,7 +18,11 @@ public class Dot extends OperatorFn {
         int numCols;
         int numRows;
 
-        areValidDimensions(operands);
+        if (!areValidDimensions(operands)) {
+            throw new DotException("The number of columns of the first operand"
+                    + " must equal to the number of rows of the second operand"
+                    + " to use the dot operator function.");
+        }
 
         firstOperand = operands[0];
         secondOperand = operands[1];
@@ -51,7 +56,7 @@ public class Dot extends OperatorFn {
         int firstOperandNumCols;
         int secondOperandNumRows;
 
-        if (hasValidNumberOfOperands(operands)) {
+        if (!hasValidNumberOfOperands(operands)) {
             throw new DotException("There must be exactly two operands to use "
                     + "the dot function.");
         }

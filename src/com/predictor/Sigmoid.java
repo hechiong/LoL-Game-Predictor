@@ -14,7 +14,7 @@ public class Sigmoid extends ActFn {
         }
     }
     // Returns the output of the derivative of the sigmoid
-    // function given and with respect to an input.
+    // function with respect to and given an input.
     protected double derivative(double x) {
         return sigmoid(x) * (1 - sigmoid(x));
     }

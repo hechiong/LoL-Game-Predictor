@@ -15,7 +15,7 @@ public class Tanh extends ActFn {
     }
 
     // Returns the output of the derivative of the hyperbolic
-    // tangent function given and with respect to an input.
+    // tangent function with respect to and given an input.
     protected double derivative(double x) {
         return 1 - Math.pow(tanh(x), 2);
     }

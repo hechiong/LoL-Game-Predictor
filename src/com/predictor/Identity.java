@@ -15,7 +15,7 @@ public class Identity extends ActFn {
     protected void accept(Vec v) {}
 
     // Returns the output of the derivative of the identity
-    // function given and with respect to an input.
+    // function with respect to and given an input.
     protected double derivative(double x) {
         return 1;
     }

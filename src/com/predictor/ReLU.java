@@ -15,7 +15,7 @@ public class ReLU extends ActFn {
     }
 
     // Returns the output of the derivative of the ReLU
-    // function given and with respect to an input.
+    // function with respect to and given an input.
     protected double derivative(double x) {
         if (x <= 0) {
             return 0;

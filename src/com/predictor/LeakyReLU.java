@@ -17,7 +17,7 @@ public class LeakyReLU extends ReLU {
     }
 
     // Returns the output of the derivative of the leaky
-    // ReLU function given and with respect to an input.
+    // ReLU function with respect to and given an input.
     protected double derivative(double x) {
         if (x <= 0) {
             return LEAKY_RELU_CONSTANT;
