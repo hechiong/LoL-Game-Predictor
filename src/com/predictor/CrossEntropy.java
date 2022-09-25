@@ -1,5 +1,6 @@
 package com.predictor;
 
+// for 0,1 class labels
 public class CrossEntropy extends LossFn {
 
     // Constructor for a cross-entropy loss function.

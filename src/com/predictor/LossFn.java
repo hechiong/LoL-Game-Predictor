@@ -2,8 +2,8 @@ package com.predictor;
 
 public abstract class LossFn extends Fn {
 
-    private static final String[] VALID_LOSS_FNS = {"cross-entropy", "log",
-            "squared error"};
+    private static final String[] VALID_LOSS_FNS = {"absolute error",
+            "cross-entropy", "hinge", "log", "squared error"};
 
     // Applies this loss function on an outcome vector and
     // a prediction vector and returns the result vector.
