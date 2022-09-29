@@ -8,75 +8,65 @@ public class Add extends OperatorFn {
     }
 
     // Applies the add operator function on the
-    // operands and returns the result matrix.
-    protected Vec[] apply(Vec[]... operands) throws OperatorFnException {
-        Vec[] sumMatrix;
+    // two operands and returns the result matrix.
+    protected Vec[] apply(Vec[] firstOperand, Vec[] secondOperand)
+            throws OperatorFnException {
         int numCols;
         int numRows;
+        Vec[] sumMatrix;
 
-        if (!areValidDimensions(operands)) {
-            throw new AddException("All of the operands must have the same "
+        if (!areValidDimensions(firstOperand, secondOperand)) {
+            throw new AddException("The two operands must have the same "
                     + "dimensions to use the add operator function.");
         }
 
-        numRows = operands[0].length;
-        numCols = operands[0][0].length();
+        numCols = firstOperand[0].length();
+        numRows = firstOperand.length;
 
         sumMatrix = new Vec[numRows];
         for (int i = 0; i < numRows; i++) {
             sumMatrix[i] = new Vec(numCols);
         }
 
-        for (Vec[] operand : operands) {
-            for (int i = 0; i < numRows; i++) {
-                for (int j = 0; j < numCols; j++) {
-                    sumMatrix[i].set(j, sumMatrix[i].get(j)
-                            + operand[i].get(j));
-                }
+
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                sumMatrix[i].set(j, firstOperand[i].get(j)
+                        + secondOperand[i].get(j));
             }
         }
 
         return sumMatrix;
     }
 
-    // Returns whether the operands have equal dimensions or not.
-    protected boolean areValidDimensions(Vec[]... operands)
-            throws OperatorFnException {
-        Vec[] operand;
-        int numRows;
-        int numCols;
+    // Returns whether the two operands have equal dimensions or not.
+    protected boolean areValidDimensions(Vec[] firstOperand,
+                                         Vec[] secondOperand) {
+        int firstOperandNumCols = firstOperand[0].length();
+        int firstOperandNumRows = firstOperand.length;
+        int secondOperandNumCols = secondOperand[0].length();
+        int secondOperandNumRows = secondOperand.length;
 
-        if (!hasValidNumberOfOperands(operands)) {
-            throw new AddException("There must be more than one operand to use"
-                    + " the add operator function.");
-        }
-
-        numRows = operands[0].length;
-        numCols = operands[0][0].length();
-
-        for (int i = 1; i < operands.length; i++) {
-            operand = operands[i];
-
-            if (operand.length != numRows || operand[0].length() != numCols) {
-                return false;
-            }
-        }
-
-        return true;
+        return firstOperandNumCols == secondOperandNumCols
+                && firstOperandNumRows == secondOperandNumRows;
     }
 
     // Returns the output matrix of the gradient of the add operator
-    // function with respect to an operand given some operands.
-    protected Vec[] gradient(int index, Vec[]... operands)
+    // function with respect to an operand given two operands.
+    protected Vec[] gradient(int index, Vec[] firstOperand,
+                             Vec[] secondOperand)
             throws OperatorFnException {
-        Vec[] addGradient;
-        int numRows;
         int numCols;
+        int numRows;
+        Vec[] addGradient;
 
-        areValidDimensions(operands);
+        if (!areValidDimensions(firstOperand, secondOperand)) {
+            throw new AddException("The two operands must have the same "
+                    + "dimensions to use the add operator function.");
+        }
 
-        numRows = operands[0].length;
-        numCols = operands[0][0].length();
+        numCols = firstOperand[0].length();
+        numRows = firstOperand.length;
 
         addGradient = new Vec[numRows];
         for (int i = 0; i < numRows; i++) {
@@ -88,10 +78,5 @@ public class Add extends OperatorFn {
         }
 
         return addGradient;
-    }
-
-    // Returns whether there's more than one operand or not.
-    protected boolean hasValidNumberOfOperands(Vec[]... operands) {
-        return operands.length > 1;
     }
 }

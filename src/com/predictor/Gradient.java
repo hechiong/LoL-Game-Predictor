@@ -34,7 +34,7 @@ public class Gradient {
                     resultNode.set(i, j, 1);
                 }
             }
-        } else if (!parentFnNode.isParentOf(childNode)) {
+        } else if (!childNode.isChildOf(parentFnNode)) {
             throw new NodeException("The gradient of the parent node can only "
                     + "be found with respect to a direct child node.");
         }

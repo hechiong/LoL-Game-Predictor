@@ -89,8 +89,8 @@ public class NeuralNetwork {
 
         // connecting nodes
         for (int i = 0; i < hiddenSizes.length + 1; i++) {
-            FunctionNode dotNode = new FunctionNode("dot");
-            FunctionNode addNode = new FunctionNode("add");
+            //FunctionNode dotNode = new FunctionNode("dot");
+            //FunctionNode addNode = new FunctionNode("add");
             ActFnNode hiddenActFnNode = new ActFnNode(hiddenActFn);
             ParameterNode weightNode = paramNodes[i * 2];
             ParameterNode biasNode = paramNodes[i * 2 + 1];

@@ -1,38 +1,16 @@
 package com.predictor;
 
-public class FunctionNode extends Node {
-
-    protected boolean computed = false;
-
-    // Constructor for a node associated with a function.
-    public FunctionNode(String fn) throws NodeException {
-        this.fn = fn;
-
-        if (!Fn.isValidFn(fn)) {
-            throw new NodeException("Function nodes can't be created with "
-                    + "invalid functions.");
-        } else if (ActFn.isValidActFn(fn)) {
-            throw new NodeException("Activation functions can only be used "
-                    + "in activation function nodes.");
-        } else if (LossFn.isValidLossFn(fn)) {
-            throw new NodeException("Loss functions can only be used in loss"
-                    + " function nodes.");
-        }
-    }
+public abstract class FunctionNode extends Node {
 
     // Computes the vector this function node will represent
     // based on the function it represents and its children nodes.
-    public Vec[] compute() throws FnException, NodeException {
-        if (computed) {
-            return getMatrix();
-        }
-
+    public void compute() throws FnException, NodeException {
         Node n0, n1;
-        int numNodes = children.size();
+        int numNodes = getChildren().size();
 
         if (numNodes > 1) {
-            n0 = children.get(0);
-            n1 = children.get(1);
+            n0 = getChildren().get(0);
+            n1 = getChildren().get(1);
 
             if (fn.equals("add")) {
                 m = new Vec[n0.numRows()];
@@ -40,7 +18,7 @@ public class FunctionNode extends Node {
                     m[i] = new Vec(n0.numCols());
                 }
 
-                for (Node n : children) {
+                for (Node n : getChildren()) {
                     if (!hasEqualDims(n)) {
                         throw new NodeException("Nodes added together must "
                                 + "have equal dimensions.");
@@ -78,23 +56,6 @@ public class FunctionNode extends Node {
             throw new NodeException("Computations can't be made for invalid "
                     + "function nodes.");
         }
-
-        return m;
-    }
-
-    // Returns whether the contents of this function node is computed or not.
-    public boolean isComputed() {
-        return computed;
-    }
-
-    // Returns whether this node is a parent of the node or not.
-    public boolean isParentOf(Node n) {
-        return n.getParents().contains(this);
-    }
-
-    // Resets this function node by making it not computed yet.
-    public void reset() {
-        computed = false;
     }
 }
 

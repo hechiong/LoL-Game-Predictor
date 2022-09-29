@@ -2,7 +2,7 @@ package com.predictor;
 
 import java.util.ArrayList;
 
-public class Node {
+public abstract class Node {
 
     protected final ArrayList<Node> children = new ArrayList<>();
     protected final ArrayList<FunctionNode> parents = new ArrayList<>();

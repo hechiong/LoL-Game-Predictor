@@ -9,25 +9,22 @@ public class Dot extends OperatorFn {
 
     // Applies the dot operator function on the
     // two operands and returns the result matrix.
-    protected Vec[] apply(Vec[]... operands) throws OperatorFnException {
-        Vec[] dotMatrix;
-        Vec[] firstOperand;
-        Vec[] secondOperand;
+    protected Vec[] apply(Vec[] firstOperand, Vec[] secondOperand)
+            throws OperatorFnException {
         double elem1;
         double elem2;
         int numCols;
         int numRows;
+        Vec[] dotMatrix;
 
-        if (!areValidDimensions(operands)) {
+        if (!areValidDimensions(firstOperand, secondOperand)) {
             throw new DotException("The number of columns of the first operand"
                     + " must equal to the number of rows of the second operand"
                     + " to use the dot operator function.");
         }
 
-        firstOperand = operands[0];
-        secondOperand = operands[1];
-        numRows = firstOperand.length;
         numCols = secondOperand[0].length();
+        numRows = firstOperand.length;
 
         dotMatrix = new Vec[numRows];
         for (int i = 0; i < numRows; i++) {
@@ -51,41 +48,42 @@ public class Dot extends OperatorFn {
 
     // Returns whether the number of columns of the first operand
     // is equal to the number of rows of the second operand or not.
-    protected boolean areValidDimensions(Vec[]... operands)
-            throws OperatorFnException {
-        int firstOperandNumCols;
-        int secondOperandNumRows;
-
-        if (!hasValidNumberOfOperands(operands)) {
-            throw new DotException("There must be exactly two operands to use "
-                    + "the dot function.");
-        }
-
-        firstOperandNumCols = operands[0][0].length();
-        secondOperandNumRows = operands[1].length;
+    protected boolean areValidDimensions(Vec[] firstOperand,
+                                         Vec[] secondOperand) {
+        int firstOperandNumCols = firstOperand[0].length();
+        int secondOperandNumRows = secondOperand.length;
 
         return firstOperandNumCols == secondOperandNumRows;
     }
 
     // Returns the output matrix of the gradient of the dot operator
     // function with respect to an operand given two operands.
-    protected Vec[] gradient(int index, Vec[]... operands)
+    protected Vec[] gradient(int index, Vec[] firstOperand,
+                             Vec[] secondOperand)
             throws OperatorFnException {
+        int numCols;
+        int numRows;
         Vec[] dotGradient;
         Vec[] oppositeOperand;
-        int numRows;
-        int numCols;
 
-        areValidDimensions(operands);
         if (index != 0 && index != 1) {
             throw new DotException("The gradient of the dot operator function "
                     + "can only be taken with respect to the first or second "
                     + "operand.");
+        } else if (!areValidDimensions(firstOperand, secondOperand)) {
+            throw new DotException("The number of columns of the first operand"
+                    + " must equal to the number of rows of the second operand"
+                    + " to use the dot operator function.");
         }
 
-        oppositeOperand = operands[1 - index];
-        numRows = oppositeOperand[0].length();
+        if (index == 0) {
+            oppositeOperand = secondOperand;
+        } else {
+            oppositeOperand = firstOperand;
+        }
+
         numCols = oppositeOperand.length;
+        numRows = oppositeOperand[0].length();
 
         dotGradient = new Vec[numRows];
         for (int i = 0; i < numRows; i++) {
@@ -97,10 +95,5 @@ public class Dot extends OperatorFn {
         }
 
         return dotGradient;
-    }
-
-    // Returns whether there are two operands or not.
-    protected boolean hasValidNumberOfOperands(Vec[]... operands) {
-        return operands.length == 2;
     }
 }

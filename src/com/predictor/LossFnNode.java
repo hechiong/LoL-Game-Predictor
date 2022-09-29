@@ -2,45 +2,53 @@ package com.predictor;
 
 public class LossFnNode extends FunctionNode {
 
-    // Constructor for a node associated with a loss function.
-    public LossFnNode(String lossFn) throws NodeException {
-        super(lossFn);
+    private final LossFn lossFn;
 
-        if (!LossFn.isValidLossFn(lossFn)) {
-            throw new NodeException("Loss function nodes can't be created "
-                    + "with invalid loss functions.");
+    // Constructor for a node associated with a loss function.
+    public LossFnNode(String lossFnName) throws LossFnNodeException {
+        if (!LossFn.isValidLossFn(lossFnName)) {
+            throw new LossFnNodeException("Loss function nodes can't be "
+                    + "created with invalid loss functions.");
+        }
+
+        this.fn = lossFnName;
+
+        switch (lossFnName) {
+            case "absolute error":
+                lossFn = new AbsoluteError();
+                break;
+            case "cross-entropy":
+            case "log":
+                lossFn = new CrossEntropy();
+                break;
+            case "hinge":
+                lossFn = new Hinge();
+                break;
+            default:
+                lossFn = new SquaredError();
         }
     }
 
-    // Computes the vector this loss function node will represent
+    // Computes the vector this loss function node represents
     // based on the loss function it represents and its child node.
-    public Vec[] compute() throws FnException, NodeException {
-        if (computed) {
-            return m;
-        }
-
-        LossFn lossFn;
-        Node n0, n1;
+    public void compute() throws LossFnException, LossFnNodeException {
         int numNodes = getChildren().size();
+        Node outcomeNode;
+        Node predNode;
 
         if (numNodes == 2) {
-            lossFn = new LossFn(getFn());
-            n0 = getChildren().get(0);
-            n1 = getChildren().get(1);
-            m = new Vec[n0.numRows()];
+            outcomeNode = getChildren().get(0);
+            predNode = getChildren().get(1);
+            m = new Vec[outcomeNode.numRows()];
 
             for (int i = 0; i < numRows(); i++) {
-                m[i] = new Vec(n0.numCols());
+                m[i] = new Vec(outcomeNode.numCols());
 
-                setRow(i, lossFn.apply(n0.getRow(i), n1.getRow(i)));
+                setRow(i, lossFn.apply(outcomeNode.getRow(i), predNode.getRow(i)));
             }
-
-            computed = true;
         } else {
-            throw new NodeException("Computations can't be made for invalid "
-                    + "loss function nodes.");
+            throw new LossFnNodeException("Computations for loss function "
+                    + "nodes can only be made with two children nodes.");
         }
-
-        return m;
     }
 }
