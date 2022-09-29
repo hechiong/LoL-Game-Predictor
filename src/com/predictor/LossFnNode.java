@@ -29,8 +29,8 @@ public class LossFnNode extends FunctionNode {
         }
     }
 
-    // Computes the vector this loss function node represents
-    // based on the loss function it represents and its child node.
+    // Computes the vector this loss function node represents based
+    // on the loss function it represents and its children nodes.
     public void compute() throws LossFnException, LossFnNodeException {
         int numNodes = getChildren().size();
         Node outcomeNode;
