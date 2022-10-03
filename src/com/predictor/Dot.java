@@ -57,7 +57,7 @@ public class Dot extends OperatorFn {
     }
 
     // Returns the output matrix of the gradient of the dot operator
-    // function with respect to an operand given two operands.
+    // function with respect to the indexed operand given two operands.
     protected Vec[] gradient(int index, Vec[] firstOperand,
                              Vec[] secondOperand)
             throws OperatorFnException {

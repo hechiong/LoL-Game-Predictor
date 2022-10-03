@@ -89,8 +89,8 @@ public class NeuralNetwork {
 
         // connecting nodes
         for (int i = 0; i < hiddenSizes.length + 1; i++) {
-            //FunctionNode dotNode = new FunctionNode("dot");
-            //FunctionNode addNode = new FunctionNode("add");
+            OperatorFnNode dotNode = new OperatorFnNode("dot");
+            OperatorFnNode addNode = new OperatorFnNode("add");
             ActFnNode hiddenActFnNode = new ActFnNode(hiddenActFn);
             ParameterNode weightNode = paramNodes[i * 2];
             ParameterNode biasNode = paramNodes[i * 2 + 1];
@@ -214,9 +214,14 @@ public class NeuralNetwork {
         return learningRate;
     }
 
+    // Returns the weight initialization this neural network uses.
+    public String getWeightInit() {
+        return wtInit.toString();
+    }
+
     // Puts a gradient in the gradient cache.
     private void putGradient(FunctionNode parentNode, Node childNode)
-            throws NodeException {
+            throws FnException, NodeException {
         gradientCache.put(parentNode, new HashMap<>());
         gradientCache.get(parentNode).put(
                 childNode, new Gradient(parentNode, childNode).compute());

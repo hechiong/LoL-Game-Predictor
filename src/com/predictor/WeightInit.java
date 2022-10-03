@@ -127,6 +127,6 @@ public class WeightInit {
 
     // Returns the String representation of this weight initialization.
     public String toString() {
-        return "Weight initialization: " + initName;
+        return initName;
     }
 }

@@ -14,16 +14,21 @@ public class Gradient {
 
     // Returns the gradient of the function
     // node with respect to the variable node.
-    public DataNode compute() throws NodeException {
+    public DataNode compute() throws FnException, NodeException {
         return directGradient(function, variable);
     }
 
     // Returns the gradient of the parent function node with respect
     // to the child node for the forward pass of backpropagation.
-    private DataNode directGradient(
-            FunctionNode parentFnNode, Node childNode) throws NodeException {
-        String parentFn = parentFnNode.getFn();
+    private DataNode directGradient(FunctionNode parentFnNode, Node childNode)
+            throws FnException, NodeException {
         DataNode resultNode;
+        int index = 0;
+        Node inputNode;
+        Node outcomeNode;
+        Node weightNode;
+        String parentFn = parentFnNode.getFn();
+        Vec[] resultMatrix;
 
         if (parentFnNode.equals(childNode)) {
             resultNode = new DataNode(
@@ -39,53 +44,73 @@ public class Gradient {
                     + "be found with respect to a direct child node.");
         }
 
-        if (parentFn.equals("dot")) {
-            Node dataNode = parentFnNode.getChildren().get(0);
-            Node weightNode = parentFnNode.getChildren().get(1);
+        if (OperatorFn.isValidOperatorFn(parentFn)) {
+            inputNode = parentFnNode.getChildren().get(0);
+            weightNode = parentFnNode.getChildren().get(1);
 
-            if (childNode.equals(dataNode)) {
-                resultNode = new DataNode(weightNode.numCols(), weightNode.numRows());
+            if (childNode.equals(weightNode)) {
+                index = 1;
+            }
 
-                for (int i = 0; i < resultNode.numRows(); i++) {
-                    for (int j = 0; j < resultNode.numCols(); j++) {
-                        resultNode.set(i, j, weightNode.get(j, i));
-                    }
-                }
+            if (parentFn.equals("add")) {
+                resultMatrix = new Add().gradient(
+                        index, inputNode.getMatrix(), weightNode.getMatrix());
             } else {
-                resultNode = new DataNode(dataNode.numCols(), dataNode.numRows());
+                resultMatrix = new Dot().gradient(
+                        index, inputNode.getMatrix(), weightNode.getMatrix());
+            }
 
-                for (int i = 0; i < resultNode.numRows(); i++) {
-                    for (int j = 0; j < resultNode.numCols(); j++) {
-                        resultNode.set(i, j, dataNode.get(j, i));
-                    }
-                }
+            resultNode = new DataNode(
+                    resultMatrix.length, resultMatrix[0].length());
+
+            for (int i = 0; i < resultNode.numRows(); i++) {
+                resultNode.setRow(i, resultMatrix[i]);
             }
         } else {
-            Node outcomeNode;
             resultNode = new DataNode(
                     childNode.numRows(), childNode.numCols());
 
             for (int i = 0; i < resultNode.numRows(); i++) {
-                if (parentFn.equals("leaky relu")) {
-                    resultNode.setRow(i, ActFn.reluGradient("leaky", childNode.getRow(i)));
-                } else if (parentFn.equals("cross-entropy")) {
-                    outcomeNode = parentFnNode.getChildren().get(0);
+                switch (parentFn) {
+                    case "identity":
+                        resultNode.setRow(i, new Identity().gradient(childNode.getRow(i)));
+                        break;
+                    case "leaky relu":
+                        resultNode.setRow(i, new LeakyReLU().gradient(childNode.getRow(i)));
+                        break;
+                    case "relu":
+                        resultNode.setRow(i, new ReLU().gradient(childNode.getRow(i)));
+                        break;
+                    case "sigmoid":
+                        resultNode.setRow(i, new Sigmoid().gradient(childNode.getRow(i)));
+                        break;
+                    case "tanh":
+                        resultNode.setRow(i, new Tanh().gradient(childNode.getRow(i)));
+                        break;
+                    case "absolute error":
+                        outcomeNode = parentFnNode.getChildren().get(0);
 
-                    resultNode.setRow(i, LossFn.crossEntropyGradient(
-                            outcomeNode.getRow(i), childNode.getRow(i)));
-                } else if (parentFn.equals("relu")) {
-                    resultNode.setRow(i, ActFn.reluGradient("", childNode.getRow(i)));
-                } else if (parentFn.equals("sigmoid")) {
-                    resultNode.setRow(i, ActFn.sigmoidGradient(childNode.getRow(i)));
-                } else if (parentFn.equals("squared")) {
-                    outcomeNode = parentFnNode.getChildren().get(0);
+                        resultNode.setRow(i, new AbsoluteError().gradient(
+                                outcomeNode.getRow(i), childNode.getRow(i)));
+                        break;
+                    case "cross-entropy":
+                        outcomeNode = parentFnNode.getChildren().get(0);
 
-                    resultNode.setRow(i, LossFn.squaredGradient(
-                            outcomeNode.getRow(i), childNode.getRow(i)));
-                } else if (parentFn.equals("tanh")) {
-                    resultNode.setRow(i, ActFn.tanhGradient(childNode.getRow(i)));
-                } else {
-                    resultNode.setRow(i, Identity.gradient(childNode.getRow(i)));
+                        resultNode.setRow(i, new CrossEntropy().gradient(
+                                outcomeNode.getRow(i), childNode.getRow(i)));
+                        break;
+                    case "hinge":
+                        outcomeNode = parentFnNode.getChildren().get(0);
+
+                        resultNode.setRow(i, new Hinge().gradient(
+                                outcomeNode.getRow(i), childNode.getRow(i)));
+                        break;
+                    case "squared error":
+                        outcomeNode = parentFnNode.getChildren().get(0);
+
+                        resultNode.setRow(i, new SquaredError().gradient(
+                                outcomeNode.getRow(i), childNode.getRow(i)));
+                        break;
                 }
             }
         }
