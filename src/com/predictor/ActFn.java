@@ -24,7 +24,7 @@ public abstract class ActFn extends Fn {
         return outputVector;
     }
 
-    // Returns whether the function is a valid activation function.
+    // Returns whether the function is a valid activation function or not.
     public static boolean isValidActFn(String fn) {
         for (String validActFn : VALID_ACT_FNS) {
             if (fn.equals(validActFn)) {

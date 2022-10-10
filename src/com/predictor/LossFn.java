@@ -36,7 +36,7 @@ public abstract class LossFn extends Fn {
         return outputVector;
     }
 
-    // Returns whether the function is a valid loss function.
+    // Returns whether the function is a valid loss function or not.
     public static boolean isValidLossFn(String fn) {
         for (String validLossFn : VALID_LOSS_FNS) {
             if (fn.equals(validLossFn)) {

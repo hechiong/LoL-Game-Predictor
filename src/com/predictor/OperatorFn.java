@@ -20,7 +20,7 @@ public abstract class OperatorFn extends Fn {
                                       Vec[] secondOperand)
             throws OperatorFnException;
 
-    // Returns whether the function is a valid operator function.
+    // Returns whether the function is a valid operator function or not.
     protected static boolean isValidOperatorFn(String fn) {
         for (String validOperatorFn : VALID_OPERATOR_FNS) {
             if (fn.equals(validOperatorFn)) {
