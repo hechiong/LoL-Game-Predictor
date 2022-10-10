@@ -21,18 +21,19 @@ public class OperatorFnNode extends FunctionNode {
         }
     }
 
-
     // Computes the matrix this operator function node represents based
     // on the operator function it represents and its children nodes.
     public void compute() throws OperatorFnException, OperatorFnNodeException {
         int numNodes = getChildren().size();
-        Node n0, n1;
+        Node firstOperand;
+        Node secondOperand;
 
         if (numNodes == 2) {
-            n0 = getChildren().get(0);
-            n1 = getChildren().get(1);
+            firstOperand = getChildren().get(0);
+            secondOperand = getChildren().get(1);
 
-            m = operatorFn.apply(n0.getMatrix(), n1.getMatrix());
+            m = operatorFn.apply(
+                    firstOperand.getMatrix(), secondOperand.getMatrix());
         } else {
             throw new OperatorFnNodeException("Computations for operator "
                     + "function nodes can only be made with two children "
