@@ -15,10 +15,7 @@ public class Add extends OperatorFn {
         int numRows;
         Vec[] sumMatrix;
 
-        if (!areValidDimensions(firstOperand, secondOperand)) {
-            throw new AddException("The two operands must have the same "
-                    + "dimensions to use the add operator function.");
-        }
+        checkValidOperands(firstOperand, secondOperand);
 
         numCols = firstOperand[0].length();
         numRows = firstOperand.length;
@@ -27,7 +24,6 @@ public class Add extends OperatorFn {
         for (int i = 0; i < numRows; i++) {
             sumMatrix[i] = new Vec(numCols);
         }
-
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
@@ -39,16 +35,20 @@ public class Add extends OperatorFn {
         return sumMatrix;
     }
 
-    // Returns whether the two operands have equal dimensions or not.
-    protected boolean areValidDimensions(Vec[] firstOperand,
-                                         Vec[] secondOperand) {
+    // Checks if the two operands have equal dimensions.
+    protected void checkValidDimensions(Vec[] firstOperand,
+                                        Vec[] secondOperand)
+            throws OperatorFnException {
         int firstOperandNumCols = firstOperand[0].length();
         int firstOperandNumRows = firstOperand.length;
         int secondOperandNumCols = secondOperand[0].length();
         int secondOperandNumRows = secondOperand.length;
 
-        return firstOperandNumCols == secondOperandNumCols
-                && firstOperandNumRows == secondOperandNumRows;
+        if (firstOperandNumCols != secondOperandNumCols
+                || firstOperandNumRows != secondOperandNumRows) {
+            throw new AddException("The two operands must have the same "
+                    + "dimensions to use the add operator function.");
+        }
     }
 
     // Returns the output matrix of the gradient of the add operator
@@ -60,10 +60,7 @@ public class Add extends OperatorFn {
         int numRows;
         Vec[] addGradient;
 
-        if (!areValidDimensions(firstOperand, secondOperand)) {
-            throw new AddException("The two operands must have the same "
-                    + "dimensions to use the add operator function.");
-        }
+        checkValidOperands(firstOperand, secondOperand);
 
         numCols = firstOperand[0].length();
         numRows = firstOperand.length;

@@ -17,11 +17,7 @@ public class Dot extends OperatorFn {
         int numRows;
         Vec[] dotMatrix;
 
-        if (!areValidDimensions(firstOperand, secondOperand)) {
-            throw new DotException("The number of columns of the first operand"
-                    + " must equal to the number of rows of the second operand"
-                    + " to use the dot operator function.");
-        }
+        checkValidOperands(firstOperand, secondOperand);
 
         numCols = secondOperand[0].length();
         numRows = firstOperand.length;
@@ -46,14 +42,19 @@ public class Dot extends OperatorFn {
         return dotMatrix;
     }
 
-    // Returns whether the number of columns of the first operand
-    // is equal to the number of rows of the second operand or not.
-    protected boolean areValidDimensions(Vec[] firstOperand,
-                                         Vec[] secondOperand) {
+    // Checks if the number of columns of the first operand
+    // is equal to the number of rows of the second operand.
+    protected void checkValidDimensions(Vec[] firstOperand,
+                                        Vec[] secondOperand)
+            throws OperatorFnException {
         int firstOperandNumCols = firstOperand[0].length();
         int secondOperandNumRows = secondOperand.length;
 
-        return firstOperandNumCols == secondOperandNumRows;
+        if (firstOperandNumCols != secondOperandNumRows) {
+            throw new DotException("The number of columns of the first operand"
+                    + " must equal to the number of rows of the second operand"
+                    + " to use the dot operator function.");
+        }
     }
 
     // Returns the output matrix of the gradient of the dot operator
@@ -70,11 +71,8 @@ public class Dot extends OperatorFn {
             throw new DotException("The gradient of the dot operator function "
                     + "can only be taken with respect to the first or second "
                     + "operand.");
-        } else if (!areValidDimensions(firstOperand, secondOperand)) {
-            throw new DotException("The number of columns of the first operand"
-                    + " must equal to the number of rows of the second operand"
-                    + " to use the dot operator function.");
         }
+        checkValidOperands(firstOperand, secondOperand);
 
         if (index == 0) {
             oppositeOperand = secondOperand;

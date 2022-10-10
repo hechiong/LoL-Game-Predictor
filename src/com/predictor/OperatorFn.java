@@ -9,10 +9,31 @@ public abstract class OperatorFn extends Fn {
     protected abstract Vec[] apply(Vec[] firstOperand, Vec[] secondOperand)
             throws OperatorFnException;
 
-    // Returns whether the dimensions of the two operands
-    // are valid for this operator function or not.
-    protected abstract boolean areValidDimensions(Vec[] firstOperand,
-                                                  Vec[] secondOperand);
+    // Checks if either of the two operands is empty.
+    protected static void checkEmptyOperands(Vec[] firstOperand,
+                                             Vec[] secondOperand)
+            throws OperatorFnException {
+        if (firstOperand.length == 0 || firstOperand[0].length() == 0
+                || secondOperand.length == 0
+                || secondOperand[0].length() == 0) {
+            throw new OperatorFnException("An operand to an operator function "
+                    + "cannot be empty.");
+        }
+    }
+
+    // Checks if the two operands are valid for this operator function.
+    protected void checkValidOperands(Vec[] firstOperand,
+                                        Vec[] secondOperand)
+            throws OperatorFnException {
+        checkEmptyOperands(firstOperand, secondOperand);
+        checkValidDimensions(firstOperand, secondOperand);
+    }
+
+    // Checks if the two operands have valid
+    // dimensions for this operator function.
+    protected abstract void checkValidDimensions(Vec[] firstOperand,
+                                                 Vec[] secondOperand)
+            throws OperatorFnException;
 
     // Returns the output matrix of the gradient of this operator
     // function with respect to an operand given two operands.
