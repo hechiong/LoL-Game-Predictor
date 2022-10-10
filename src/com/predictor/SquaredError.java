@@ -14,10 +14,7 @@ public class SquaredError extends LossFn {
         double predElem;
         Vec resultVector = new Vec(outcome.length());
 
-        if (!haveEqualLengths(outcome, prediction)) {
-            throw new LossFnException("The outcome and prediction vectors must"
-                    + " have the same lengths to use a loss function.");
-        }
+        checkLengths(outcome, prediction);
 
         for (int i = 0; i < outcome.length(); i++) {
             outcomeElem = outcome.get(i);
