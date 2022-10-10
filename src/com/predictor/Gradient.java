@@ -75,19 +75,24 @@ public class Gradient {
             for (int i = 0; i < resultNode.numRows(); i++) {
                 switch (parentFn) {
                     case "identity":
-                        resultNode.setRow(i, new Identity().gradient(childNode.getRow(i)));
+                        resultNode.setRow(i,
+                                new Identity().gradient(childNode.getRow(i)));
                         break;
                     case "leaky relu":
-                        resultNode.setRow(i, new LeakyReLU().gradient(childNode.getRow(i)));
+                        resultNode.setRow(i,
+                                new LeakyReLU().gradient(childNode.getRow(i)));
                         break;
                     case "relu":
-                        resultNode.setRow(i, new ReLU().gradient(childNode.getRow(i)));
+                        resultNode.setRow(i,
+                                new ReLU().gradient(childNode.getRow(i)));
                         break;
                     case "sigmoid":
-                        resultNode.setRow(i, new Sigmoid().gradient(childNode.getRow(i)));
+                        resultNode.setRow(i,
+                                new Sigmoid().gradient(childNode.getRow(i)));
                         break;
                     case "tanh":
-                        resultNode.setRow(i, new Tanh().gradient(childNode.getRow(i)));
+                        resultNode.setRow(i,
+                                new Tanh().gradient(childNode.getRow(i)));
                         break;
                     case "absolute error":
                         resultNode.setRow(i, new AbsoluteError().gradient(
