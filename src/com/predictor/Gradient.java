@@ -18,19 +18,22 @@ public class Gradient {
         return directGradient(function, variable);
     }
 
-    // Returns the gradient of the parent function node with respect
-    // to the child node for the forward pass of backpropagation.
+    // Returns the gradient of the parent function node with respect to
+    // the child node if they have a direct relationship with each other.
     private DataNode directGradient(FunctionNode parentFnNode, Node childNode)
             throws FnException, NodeException {
         DataNode resultNode;
         int index = 0;
         Node inputNode;
-        Node outcomeNode;
+        Node outcomeNode = new DataNode();
         Node weightNode;
         String parentFn = parentFnNode.getFn();
         Vec[] resultMatrix;
 
-        if (parentFnNode.equals(childNode)) {
+        if (!childNode.isChildOf(parentFnNode)) {
+            throw new NodeException("The gradient of the parent node can only "
+                    + "be found with respect to a direct child node.");
+        } else if (parentFnNode.equals(childNode)) {
             resultNode = new DataNode(
                     childNode.numRows(), childNode.numCols());
 
@@ -39,12 +42,7 @@ public class Gradient {
                     resultNode.set(i, j, 1);
                 }
             }
-        } else if (!childNode.isChildOf(parentFnNode)) {
-            throw new NodeException("The gradient of the parent node can only "
-                    + "be found with respect to a direct child node.");
-        }
-
-        if (OperatorFn.isValidOperatorFn(parentFn)) {
+        } else if (OperatorFn.isValidOperatorFn(parentFn)) {
             inputNode = parentFnNode.getChildren().get(0);
             weightNode = parentFnNode.getChildren().get(1);
 
@@ -67,6 +65,10 @@ public class Gradient {
                 resultNode.setRow(i, resultMatrix[i]);
             }
         } else {
+            if (LossFn.isValidLossFn(parentFn)) {
+                outcomeNode = parentFnNode.getChildren().get(0);
+            }
+
             resultNode = new DataNode(
                     childNode.numRows(), childNode.numCols());
 
@@ -88,29 +90,20 @@ public class Gradient {
                         resultNode.setRow(i, new Tanh().gradient(childNode.getRow(i)));
                         break;
                     case "absolute error":
-                        outcomeNode = parentFnNode.getChildren().get(0);
-
                         resultNode.setRow(i, new AbsoluteError().gradient(
                                 outcomeNode.getRow(i), childNode.getRow(i)));
                         break;
                     case "cross-entropy":
-                        outcomeNode = parentFnNode.getChildren().get(0);
-
                         resultNode.setRow(i, new CrossEntropy().gradient(
                                 outcomeNode.getRow(i), childNode.getRow(i)));
                         break;
                     case "hinge":
-                        outcomeNode = parentFnNode.getChildren().get(0);
-
                         resultNode.setRow(i, new Hinge().gradient(
                                 outcomeNode.getRow(i), childNode.getRow(i)));
                         break;
-                    case "squared error":
-                        outcomeNode = parentFnNode.getChildren().get(0);
-
+                    default:
                         resultNode.setRow(i, new SquaredError().gradient(
                                 outcomeNode.getRow(i), childNode.getRow(i)));
-                        break;
                 }
             }
         }
