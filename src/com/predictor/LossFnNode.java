@@ -6,11 +6,6 @@ public class LossFnNode extends FunctionNode {
 
     // Constructor for a node associated with a loss function.
     public LossFnNode(String lossFnName) throws LossFnNodeException {
-        if (!LossFn.isValidLossFn(lossFnName)) {
-            throw new LossFnNodeException("Loss function nodes can't be "
-                    + "created with invalid loss functions.");
-        }
-
         this.fn = lossFnName;
 
         switch (lossFnName) {
@@ -24,8 +19,12 @@ public class LossFnNode extends FunctionNode {
             case "hinge":
                 lossFn = new Hinge();
                 break;
-            default:
+            case "squared error":
                 lossFn = new SquaredError();
+                break;
+            default:
+                throw new LossFnNodeException("Loss function nodes can't be "
+                        + "created with invalid loss functions.");
         }
     }
 

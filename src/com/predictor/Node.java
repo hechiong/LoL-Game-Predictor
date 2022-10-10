@@ -28,14 +28,18 @@ public abstract class Node {
         }
     }
 
-    // Adds a parent node to this node.
-    public void addParent(FunctionNode n) {
+    // Adds a parent node to this node if the parent
+    // node has an insufficient number of children nodes.
+    public void addParent(FunctionNode n) throws NodeException {
         if ((ActFn.isValidActFn(n.getFn()) && n.getChildren().size() < 1)
-                || (LossFn.isValidLossFn(n.getFn()) && n.getChildren().size() < 2)
-                || (n.getFn().equals("dot") && n.getChildren().size() < 2)
-                || n.getFn().equals("add")) {
+                || ((LossFn.isValidLossFn(n.getFn())
+                || OperatorFn.isValidOperatorFn(n.getFn()))
+                && n.getChildren().size() < 2)) {
             parents.add(n);
             n.children.add(this);
+        } else {
+            throw new NodeException("Function nodes cannot have too many "
+                    + "children nodes.");
         }
     }
 
@@ -47,17 +51,6 @@ public abstract class Node {
     // Returns a copy of the list of parents of this node.
     public ArrayList<Node> getChildren() {
         return new ArrayList<>(children);
-    }
-
-    // Returns the specified column of this node's matrix.
-    public Vec getCol(int col) {
-        Vec column = new Vec(numRows());
-
-        for (int i = 0; i < numRows(); i++) {
-            column.set(i, m[i].get(col));
-        }
-
-        return column;
     }
 
     // Returns the function this node represents.
@@ -89,6 +82,8 @@ public abstract class Node {
     public Vec getRow(int row) {
         return m[row].copy();
     }
+
+    // add setMatrix and adjust any uses of "m = ..." ?
 
     // Returns whether the node has the same dimensions as this node.
     public boolean hasEqualDims(Node n) {

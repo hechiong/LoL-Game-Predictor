@@ -7,17 +7,18 @@ public class OperatorFnNode extends FunctionNode {
     // Constructor for a node associated with an operator function.
     public OperatorFnNode(String operatorFnName)
             throws OperatorFnNodeException {
-        if (!OperatorFn.isValidOperatorFn(operatorFnName)) {
-            throw new OperatorFnNodeException("Operator function nodes can't "
-                    + "be created with invalid operator functions.");
-        }
-
         this.fn = operatorFnName;
 
-        if (operatorFnName.equals("add")) {
-            operatorFn = new Add();
-        } else {
-            operatorFn = new Dot();
+        switch (operatorFnName) {
+            case "add":
+                operatorFn = new Add();
+                break;
+            case "dot":
+                operatorFn = new Dot();
+                break;
+            default:
+                throw new OperatorFnNodeException("Operator function nodes "
+                        + "can't be created with invalid operator functions.");
         }
     }
 

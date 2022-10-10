@@ -6,11 +6,6 @@ public class ActFnNode extends FunctionNode {
 
     // Constructor for a node associated with an activation function.
     public ActFnNode(String actFnName) throws ActFnNodeException {
-        if (!ActFn.isValidActFn(actFnName)) {
-            throw new ActFnNodeException("Activation function nodes can't be "
-                    + "created with invalid activation functions.");
-        }
-
         this.fn = actFnName;
 
         switch (actFnName) {
@@ -26,8 +21,12 @@ public class ActFnNode extends FunctionNode {
             case "sigmoid":
                 actFn = new Sigmoid();
                 break;
-            default:
+            case "tanh":
                 actFn = new Tanh();
+                break;
+            default:
+                throw new ActFnNodeException("Activation function nodes can't "
+                        + "be created with invalid activation functions.");
         }
     }
 
