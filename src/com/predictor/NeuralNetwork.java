@@ -4,16 +4,15 @@ import java.util.HashMap;
 
 public class NeuralNetwork {
 
-    private final DataNode sampleNode;
     private final ActFnNode outputNode;
+    private final DataNode sampleNode;
+    private final HashMap<Node, HashMap<Node, DataNode>> gradientCache;
     private final LossFnNode lossNode;
     private final ParameterNode[] paramNodes;
     private final WeightInit wtInit;
-    private final HashMap<Node, HashMap<Node, DataNode>> gradientCache =
-            new HashMap<>();
 
-    private int batchSize = 0;
     private double learningRate = 1;
+    private int batchSize = 0;
 
     // output layer
     // Regression: linear (because values are unbounded)
@@ -59,7 +58,12 @@ public class NeuralNetwork {
         } else if (!ActFn.isValidActFn(outputActFn)) {
             throw new FnException("Only valid activation functions can be used"
                     + " for the output layer.");
+        } else if (!WeightInit.isValidWeightInit(weightInit)) {
+            throw new FnException("Only valid activation functions can be used"
+                    + " for the hidden layers.");
         }
+
+        gradientCache = new HashMap<>();
 
         sampleNode = sample;
         outputNode = new ActFnNode(outputActFn);

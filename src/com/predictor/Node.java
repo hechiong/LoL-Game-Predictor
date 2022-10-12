@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
-    protected final ArrayList<Node> children = new ArrayList<>();
-    protected final ArrayList<FunctionNode> parents = new ArrayList<>();
-    protected String fn = "";
-    protected Vec[] m;
+    private final ArrayList<FunctionNode> parents = new ArrayList<>();
+    private final ArrayList<Node> children = new ArrayList<>();
+    private String fn = "";
+    private Vec[] m;
 
     // Default constructor for a node representing
     // a matrix containing one row and column.
@@ -28,6 +28,11 @@ public abstract class Node {
         }
     }
 
+    // Adds a child node to this node.
+    protected void addChild(Node n) {
+        children.add(n);
+    }
+
     // Adds a parent node to this node if the parent
     // node has an insufficient number of children nodes.
     public void addParent(FunctionNode n) throws NodeException {
@@ -36,7 +41,7 @@ public abstract class Node {
                 || OperatorFn.isValidOperatorFn(n.getFn()))
                 && n.getChildren().size() < 2)) {
             parents.add(n);
-            n.children.add(this);
+            n.addChild(this);
         } else {
             throw new NodeException("Function nodes cannot have too many "
                     + "children nodes.");
@@ -53,12 +58,12 @@ public abstract class Node {
         return new ArrayList<>(children);
     }
 
-    // Returns the function this node represents.
+    // Returns the name of the function this node represents.
     public String getFn() {
         return fn;
     }
 
-    // Returns the matrix this node represents.
+    // Returns a copy of the matrix this node represents.
     public Vec[] getMatrix() {
         Vec[] mCopy = new Vec[numRows()];
 
@@ -78,31 +83,14 @@ public abstract class Node {
         return new ArrayList<>(parents);
     }
 
-    // Returns the specified row of this node's matrix.
+    // Returns a copy of the specified row of this node's matrix.
     public Vec getRow(int row) {
         return m[row].copy();
     }
 
-    // add setMatrix and adjust any uses of "m = ..." ?
-
-    // Returns whether the node has the same dimensions as this node.
-    public boolean hasEqualDims(Node n) {
-        return hasEqualNumRows(n) && hasEqualNumCols(n);
-    }
-
-    // Returns whether the node has the same number of columns as this node.
-    public boolean hasEqualNumCols(Node n) {
-        return numCols() == n.numCols();
-    }
-
-    // Returns whether the node has the same number of columns as this node.
-    public boolean hasEqualNumRows(Node n) {
-        return numRows() == n.numRows();
-    }
-
     // Returns whether this node is a child of the node or not.
     public boolean isChildOf(FunctionNode n) {
-        return n.getChildren().contains(this);
+        return parents.contains(n);
     }
 
     // Returns the number of columns of this node's matrix.
@@ -120,14 +108,12 @@ public abstract class Node {
         m[row].set(col, value);
     }
 
-    // Sets a column of this node's matrix to be equivalent to the vector.
-    public void setCol(int col, Vec v) {
-        for (int i = 0; i < numRows(); i++) {
-            set(i, col, v.get(i));
-        }
+    // Sets this node's matrix to a specified matrix.
+    public void setMatrix(Vec[] matrix) {
+        m = matrix;
     }
 
-    // Sets a row of this node's matrix to be equivalent to the vector.
+    // Sets a row of this node's matrix to a specified vector.
     public void setRow(int row, Vec v) {
         for (int i = 0; i < numCols(); i++) {
             set(row, i, v.get(i));
