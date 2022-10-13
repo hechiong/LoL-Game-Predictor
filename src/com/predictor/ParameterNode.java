@@ -45,8 +45,13 @@ public class ParameterNode extends Node {
     // Updates this parameter by adding the matrix
     // changes to the matrix this parameter represents.
     private void updateParameter() {
+        Vec updatedRow;
+
         for (int i = 0; i < numRows(); i++) {
-            m[i].add(matrixChanges[i]);
+            updatedRow = getRow(i);
+
+            updatedRow.add(matrixChanges[i]);
+            setRow(i, updatedRow);
         }
     }
 

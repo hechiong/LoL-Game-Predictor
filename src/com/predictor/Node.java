@@ -6,6 +6,7 @@ public abstract class Node {
 
     private final ArrayList<FunctionNode> parents = new ArrayList<>();
     private final ArrayList<Node> children = new ArrayList<>();
+
     private String fn = "";
     private Vec[] m;
 
