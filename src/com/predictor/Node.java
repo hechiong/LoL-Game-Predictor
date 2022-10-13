@@ -108,12 +108,24 @@ public abstract class Node {
         m[row].set(col, value);
     }
 
-    // Sets this node's matrix to a specified matrix.
-    public void setMatrix(Vec[] matrix) {
-        m = matrix;
+    protected void setFn(String fnName) {
+        fn = fnName;
     }
 
-    // Sets a row of this node's matrix to a specified vector.
+    // Sets this node's matrix to a copy of the specified matrix.
+    public void setMatrix(Vec[] matrix) {
+        m = new Vec[matrix.length];
+
+        for (int i = 0; i < matrix.length; i++) {
+            m[i] = new Vec(matrix[i].length());
+
+            for (int j = 0; j < matrix[i].length(); j++) {
+                m[i].set(j, matrix[i].get(j));
+            }
+        }
+    }
+
+    // Sets a row of this node's matrix to a copy of the specified vector.
     public void setRow(int row, Vec v) {
         for (int i = 0; i < numCols(); i++) {
             set(row, i, v.get(i));

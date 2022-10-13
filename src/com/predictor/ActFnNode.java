@@ -6,8 +6,6 @@ public class ActFnNode extends FunctionNode {
 
     // Constructor for a node associated with an activation function.
     public ActFnNode(String actFnName) throws ActFnNodeException {
-        this.fn = actFnName;
-
         switch (actFnName) {
             case "identity":
                 actFn = new Identity();
@@ -28,6 +26,8 @@ public class ActFnNode extends FunctionNode {
                 throw new ActFnNodeException("Activation function nodes can't "
                         + "be created with invalid activation functions.");
         }
+
+        setFn(actFnName);
     }
 
     // Computes the vector this activation function node represents
@@ -35,17 +35,18 @@ public class ActFnNode extends FunctionNode {
     public void compute() throws ActFnNodeException {
         int numNodes = getChildren().size();
         Node childNode;
+        Vec[] matrix;
 
         if (numNodes == 1) {
             childNode = getChildren().get(0);
-            m = new Vec[childNode.numRows()];
+            matrix = new Vec[childNode.numRows()];
 
             for (int i = 0; i < numRows(); i++) {
-                m[i] = new Vec(childNode.numCols());
-
-                setRow(i, childNode.getRow(i));
-                actFn.accept(m[i]);
+                matrix[i] = childNode.getRow(i);
+                actFn.accept(matrix[i]);
             }
+
+            setMatrix(matrix);
         } else {
             throw new ActFnNodeException("Computations for activation function"
                     + " nodes can only be made with one child node.");

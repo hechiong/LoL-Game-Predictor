@@ -7,8 +7,6 @@ public class OperatorFnNode extends FunctionNode {
     // Constructor for a node associated with an operator function.
     public OperatorFnNode(String operatorFnName)
             throws OperatorFnNodeException {
-        this.fn = operatorFnName;
-
         switch (operatorFnName) {
             case "add":
                 operatorFn = new Add();
@@ -20,6 +18,8 @@ public class OperatorFnNode extends FunctionNode {
                 throw new OperatorFnNodeException("Operator function nodes "
                         + "can't be created with invalid operator functions.");
         }
+
+        setFn(operatorFnName);
     }
 
     // Computes the matrix this operator function node represents based
@@ -28,13 +28,16 @@ public class OperatorFnNode extends FunctionNode {
         int numNodes = getChildren().size();
         Node firstOperand;
         Node secondOperand;
+        Vec[] matrix;
 
         if (numNodes == 2) {
             firstOperand = getChildren().get(0);
             secondOperand = getChildren().get(1);
 
-            m = operatorFn.apply(
+            matrix = operatorFn.apply(
                     firstOperand.getMatrix(), secondOperand.getMatrix());
+
+            setMatrix(matrix);
         } else {
             throw new OperatorFnNodeException("Computations for operator "
                     + "function nodes can only be made with two children "

@@ -6,8 +6,6 @@ public class LossFnNode extends FunctionNode {
 
     // Constructor for a node associated with a loss function.
     public LossFnNode(String lossFnName) throws LossFnNodeException {
-        this.fn = lossFnName;
-
         switch (lossFnName) {
             case "absolute error":
                 lossFn = new AbsoluteError();
@@ -26,6 +24,8 @@ public class LossFnNode extends FunctionNode {
                 throw new LossFnNodeException("Loss function nodes can't be "
                         + "created with invalid loss functions.");
         }
+
+        setFn(lossFnName);
     }
 
     // Computes the vector this loss function node represents based
@@ -34,17 +34,19 @@ public class LossFnNode extends FunctionNode {
         int numNodes = getChildren().size();
         Node outcomeNode;
         Node predNode;
+        Vec[] matrix;
 
         if (numNodes == 2) {
             outcomeNode = getChildren().get(0);
             predNode = getChildren().get(1);
-            m = new Vec[outcomeNode.numRows()];
+            matrix = new Vec[outcomeNode.numRows()];
 
             for (int i = 0; i < numRows(); i++) {
-                m[i] = new Vec(outcomeNode.numCols());
-
-                setRow(i, lossFn.apply(outcomeNode.getRow(i), predNode.getRow(i)));
+                matrix[i] = lossFn.apply(
+                        outcomeNode.getRow(i), predNode.getRow(i));
             }
+
+            setMatrix(matrix);
         } else {
             throw new LossFnNodeException("Computations for loss function "
                     + "nodes can only be made with two children nodes.");
