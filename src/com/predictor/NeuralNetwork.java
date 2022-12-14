@@ -1,5 +1,6 @@
 package com.predictor;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 public class NeuralNetwork {
@@ -63,28 +64,25 @@ public class NeuralNetwork {
                     + " for the hidden layers.");
         }
 
-        gradientCache = new HashMap<>();
-
-        sampleNode = sample;
         outputNode = new ActFnNode(outputActFn);
+        gradientCache = new HashMap<>();
         lossNode = new LossFnNode(lossFn);
-
         paramNodes = new ParameterNode[hiddenSizes.length * 2 + 2];
-
         wtInit = new WeightInit(weightInit);
+        sampleNode = sample;
 
         // preparing parameters and their respective changes
         for (int i = 0; i < hiddenSizes.length * 2 + 2; i++) {
             if (i % 2 == 0) {
                 // adding weight parameter node and its respective changes
-                if (i / 2 == 0) {
-                    paramNodes[i] = new ParameterNode(hiddenSizes[i / 2], sample.numCols());
+                if (i == 0) {
+                    paramNodes[i] = new ParameterNode(sample.numCols(), hiddenSizes[i / 2]);
                 } else {
-                    paramNodes[i] = new ParameterNode(hiddenSizes[i / 2], hiddenSizes[(i / 2) - 1]);
+                    paramNodes[i] = new ParameterNode(hiddenSizes[(i / 2) - 1], hiddenSizes[i / 2]);
                 }
             } else {
                 // adding bias parameter node and its respective changes
-                paramNodes[i] = new ParameterNode(hiddenSizes[i / 2], 1);
+                paramNodes[i] = new ParameterNode(1, hiddenSizes[i / 2]);
             }
 
             // initializing each weight
@@ -127,8 +125,8 @@ public class NeuralNetwork {
         DataNode chainGradNode;
         DataNode directGradNode;
         DataNode resultNode;
+        Node childNode = outputNode.getChildren().get(0);
         Node parentNode = outputNode;
-        Node childNode = parentNode.getChildren().get(0);
 
         while (childNode != sampleNode) {
             chainGradNode = gradientCache.get(lossNode).get(parentNode);
@@ -165,11 +163,11 @@ public class NeuralNetwork {
             resultNode = new DataNode(paramNode.numRows(), paramNode.numCols());
 
             if (parentNode.getFn().equals("dot")) {
-                for (int j = 0; j < resultNode.numRows(); j++) {
-                    for (int k = 0; k < resultNode.numCols(); k++) {
-                        resultNode.set(j, k,
-                                chainGradNode.get(0, k)
-                                        * directGradNode.get(0, j));
+                for (int i = 0; i < resultNode.numRows(); i++) {
+                    for (int j = 0; j < resultNode.numCols(); j++) {
+                        resultNode.set(i, j,
+                                chainGradNode.get(0, j)
+                                        * directGradNode.get(0, i));
                     }
                 }
             } else {
@@ -180,7 +178,6 @@ public class NeuralNetwork {
                 }
             }
 
-            gradientCache.putIfAbsent(lossNode, new HashMap<>());
             gradientCache.get(lossNode).put(paramNode, resultNode);
 
             paramNode.addChanges(resultNode);
