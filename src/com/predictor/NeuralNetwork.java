@@ -1,9 +1,9 @@
 package com.predictor;
 
-import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable {
 
     private final ActFnNode outputNode;
     private final DataNode sampleNode;
