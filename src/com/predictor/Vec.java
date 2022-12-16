@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Vec implements Serializable {
 
-    protected double[] vec;
+    private double[] vec;
 
     // Default constructor for a vector containing one element.
     public Vec() {
@@ -134,7 +134,6 @@ public class Vec implements Serializable {
             } else {
                 s = s.concat("]");
             }
-
         }
 
         return s;
