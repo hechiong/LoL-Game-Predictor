@@ -38,7 +38,7 @@ public class LoLWeight extends Weight {
         }
         this.teamType = teamType;
 
-        vec = new double[++numFeatures];
+        //vec = new double[++numFeatures];
     }
 
     // Returns a mapping of the ID's to the names

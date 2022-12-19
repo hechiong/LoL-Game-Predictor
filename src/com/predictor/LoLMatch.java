@@ -47,7 +47,7 @@ public class LoLMatch {
             if (playerPuuid.equals(puuid)) {
                 playerIndex = numAllies;
             }
-            numAllies++;
+            numAllies += 1;
         }
     }
 
@@ -58,7 +58,7 @@ public class LoLMatch {
             enemyPuuids[numEnemies] = puuid;
             enemyChamps[numEnemies] = champ;
             enemyChampWinRates[numEnemies] = champWinRate;
-            numEnemies++;
+            numEnemies += 1;
         }
     }
 
@@ -71,7 +71,7 @@ public class LoLMatch {
             summoner = Summoner.withPuuid(allyPuuids[i]).get().getName();
             alliesInfo += "Ally " + summoner + " had a win rate of "
                     + (allyChampWinRates[i] * 100) + "% on " + allyChamps[i]
-                    + " coming into this match.\n";
+                    + " coming into match " + matchId + ".\n";
         }
 
         return alliesInfo;
@@ -86,15 +86,10 @@ public class LoLMatch {
             summoner = Summoner.withPuuid(enemyPuuids[i]).get().getName();
             enemiesInfo += "Enemy " + summoner + " had a win rate of "
                     + (enemyChampWinRates[i] * 100) + "% on " + enemyChamps[i]
-                    + " coming into this match.\n";
+                    + " coming into this match " + matchId + ".\n";
         }
 
         return enemiesInfo;
-    }
-
-    // Returns the corresponding ally's PUUID.
-    public String getAllyPuuid(int index) {
-        return allyPuuids[index];
     }
 
     // Returns the champion played in this match by the corresponding ally.
@@ -106,11 +101,6 @@ public class LoLMatch {
     // the corresponding champion coming into this match.
     public double getAllyChampWinRate(int index) {
         return allyChampWinRates[index];
-    }
-
-    // Returns the corresponding enemy's PUUID.
-    public String getEnemyPuuid(int index) {
-        return enemyPuuids[index];
     }
 
     // Returns the champion played in this match by the corresponding enemy.
