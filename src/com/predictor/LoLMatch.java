@@ -142,9 +142,9 @@ public class LoLMatch {
     // side on which the player's team was in this match.
     private String isAllyBlueSideString() {
         if (isAllyBlueSide) {
-            return "Allies' side: blue";
+            return "Allies' side: blue\n";
         }
-        return "Allies' side: red";
+        return "Allies' side: red\n";
     }
 
     // Returns whether the player's team won this match or not.
@@ -156,17 +156,17 @@ public class LoLMatch {
     // whether the player's team won this match or not.
     private String isAllyWinnerString() {
         if (isAllyWinner) {
-            return "Allies won: yes";
+            return "Allies won: yes\n";
         }
-        return "Allies won: no";
+        return "Allies won: no\n";
     }
 
     // Returns the String representation of this match.
     public String toString() {
         String matchIdStr = "Match ID: " + matchId + "\n";
         String playerPuuidStr = "Player PUUID: " + playerPuuid + "\n";
-        String isAllyBlueSideStr = isAllyBlueSideString() + "\n";
-        String isAllyWinnerStr = isAllyWinnerString() + "\n";
+        String isAllyBlueSideStr = isAllyBlueSideString();
+        String isAllyWinnerStr = isAllyWinnerString();
         String alliesInfo = alliesInfoString();
         String enemiesInfo = enemiesInfoString();
 
