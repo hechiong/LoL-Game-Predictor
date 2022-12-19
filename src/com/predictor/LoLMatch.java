@@ -64,32 +64,46 @@ public class LoLMatch {
 
     // Returns information about the player's team.
     private String alliesInfoString() {
-        String alliesInfo = "";
         String summoner;
+        StringBuilder alliesInfo = new StringBuilder();
 
         for (int i = 0; i < numAllies; i++) {
             summoner = Summoner.withPuuid(allyPuuids[i]).get().getName();
-            alliesInfo += "Ally " + summoner + " had a win rate of "
-                    + (allyChampWinRates[i] * 100) + "% on " + allyChamps[i]
-                    + " coming into match " + matchId + ".\n";
+
+            alliesInfo.append("Ally ")
+                    .append(summoner)
+                    .append(" had a win rate of ")
+                    .append(allyChampWinRates[i] * 100)
+                    .append("% on ")
+                    .append(allyChamps[i])
+                    .append(" coming into match ")
+                    .append(matchId)
+                    .append(".\n");
         }
 
-        return alliesInfo;
+        return alliesInfo.toString();
     }
 
     // Returns information about the enemy team.
     private String enemiesInfoString() {
-        String enemiesInfo = "";
         String summoner;
+        StringBuilder enemiesInfo = new StringBuilder();
 
         for (int i = 0; i < numEnemies; i++) {
             summoner = Summoner.withPuuid(enemyPuuids[i]).get().getName();
-            enemiesInfo += "Enemy " + summoner + " had a win rate of "
-                    + (enemyChampWinRates[i] * 100) + "% on " + enemyChamps[i]
-                    + " coming into this match " + matchId + ".\n";
+
+            enemiesInfo.append("Enemy ")
+                    .append(summoner)
+                    .append(" had a win rate of ")
+                    .append(enemyChampWinRates[i] * 100)
+                    .append("% on ")
+                    .append(enemyChamps[i])
+                    .append(" coming into match ")
+                    .append(matchId)
+                    .append(".\n");
         }
 
-        return enemiesInfo;
+        return enemiesInfo.toString();
     }
 
     // Returns the champion played in this match by the corresponding ally.
