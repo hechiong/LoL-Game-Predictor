@@ -11,6 +11,7 @@ import java.util.Iterator;
 public class LoLMatchHistory implements Iterable<LoLMatch>, Serializable {
 
     private final String playerPuuid;
+
     private ArrayList<LoLMatch> matchHistory;
     private String season;
 
@@ -81,13 +82,15 @@ public class LoLMatchHistory implements Iterable<LoLMatch>, Serializable {
     // Resets the player's match history if it
     // contains matches from previous seasons.
     public void resetIfOldMatchesExist() {
-        LoLMatch earliestMatch = matchHistory.get(0);
-        String earliestPatch = earliestMatch.getPatch();
-        String earliestSeason = earliestPatch.split("\\.")[0];
+        if (!isEmpty()) {
+            LoLMatch earliestMatch = matchHistory.get(0);
+            String earliestPatch = earliestMatch.getPatch();
+            String earliestSeason = earliestPatch.split("\\.")[0];
 
-        updateSeason();
-        if (!earliestSeason.equals(season)) {
-            matchHistory = new ArrayList<>();
+            updateSeason();
+            if (!earliestSeason.equals(season)) {
+                matchHistory = new ArrayList<>();
+            }
         }
     }
 
