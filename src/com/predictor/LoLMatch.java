@@ -4,25 +4,23 @@ import com.merakianalytics.orianna.types.core.summoner.Summoner;
 
 public class LoLMatch {
 
+    private static final int NUM_PLAYERS = 5;
+
+    private final boolean isAllyBlueSide;
+    private final boolean isAllyWinner;
+    private final double[] allyChampWinRates = new double[NUM_PLAYERS];
+    private final double[] enemyChampWinRates = new double[NUM_PLAYERS];
     private final long matchId;
     private final String patch;
     private final String playerPuuid;
-    private final boolean isAllyBlueSide;
-    private final boolean isAllyWinner;
-    private int playerIndex = -1;
-
-    private static final int NUM_PLAYERS = 5;
-    private int numAllies = 0;
-    private int numEnemies = 0;
-
     private final String[] allyPuuids = new String[NUM_PLAYERS];
     private final String[] enemyPuuids = new String[NUM_PLAYERS];
-
     private final String[] allyChamps = new String[NUM_PLAYERS];
     private final String[] enemyChamps = new String[NUM_PLAYERS];
 
-    private final double[] allyChampWinRates = new double[NUM_PLAYERS];
-    private final double[] enemyChampWinRates = new double[NUM_PLAYERS];
+    private int numAllies = 0;
+    private int numEnemies = 0;
+    private int playerIndex = -1;
 
     // Constructor for a simplified version of League API's
     // Match class that'll be associated with a specific player.
