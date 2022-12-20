@@ -26,7 +26,6 @@ public class Main {
     private static final Region NA = Region.NORTH_AMERICA;
     private static final Scanner keyboard = new Scanner(System.in);
     private static final String MATCH_HISTORY_SUFFIX = "MatchHistory.ser";
-    private static final String RIOT_API_KEY = "RGAPI-0db9c3c9-c440-41cb-8d20-56352b0ee003";
     private static final String SUMM_ERR_MSG = "Load summoner first.";
     private static final String WEIGHT_ERR_MSG = "Train or load a weight first.";
     private static final String WEIGHT_SUFFIX = "Weight.ser";
@@ -51,7 +50,7 @@ public class Main {
 
     // The user inputs commands and/or arguments to interact with the program.
     public static void main(String[] args) {
-        Orianna.setRiotAPIKey(RIOT_API_KEY);
+        Orianna.setRiotAPIKey(System.getenv("RIOT_API_KEY"));
         Orianna.setDefaultRegion(NA);
 
         String latestPatch = Patch.get().getName();
@@ -984,7 +983,7 @@ public class Main {
                 userInput = keyboard.nextLine().toLowerCase();
             }
 
-            weight.setActFn(new ActFn(userInput));
+            //weight.setActFn(new ActFn(userInput));
         }
     }
 
@@ -1136,7 +1135,7 @@ public class Main {
             userInput = keyboard.nextLine().toLowerCase();
         }
 
-        weight.setLossFn(new LossFn(userInput));
+        //weight.setLossFn(new LossFn(userInput));
     }
 
     // Sets up the maximum number of matches to load from the match
@@ -1182,7 +1181,7 @@ public class Main {
             setUpLossFunction();
         } else if (userInput.equals("lr")) {
             weight.setModel(Weight.Model.LR);
-            weight.setLossFn(new LossFn("logistic"));
+            //weight.setLossFn(new LossFn("logistic"));
         } else {
             weight.setModel(Weight.Model.NN);
             setUpActivationFunction();
