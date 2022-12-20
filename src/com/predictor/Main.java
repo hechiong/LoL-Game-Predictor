@@ -18,42 +18,36 @@ import org.joda.time.DateTime;
 
 public class Main {
 
-    private static final Region NA = Region.NORTH_AMERICA;
-    private static final String RIOT_API_KEY = "RGAPI-0db9c3c9-c440-41cb-8d20-56352b0ee003";
-
-    public static String currentSeason;
-    private static String earliestPatch;
-    private static DateTime earliestPatchStartTime;
-    private static final int EARLIEST_SUBPATCH = 11;
-    private static int lastSubpatchPlayed;
-    private static final ArrayList<String> patchesPlayed = new ArrayList<>();
-
     private static final ArrayList<String> champsArray = new ArrayList<>();
+    private static final ArrayList<String> patchesPlayed = new ArrayList<>();
     private static final HashMap<Integer, String> champsMap = new HashMap<>();
-    private static final String[] roles = {"top", "jungle", "mid", "adc", "support"};
+    private static final int EARLIEST_SUBPATCH = 11;
     private static final int NUM_PLAYERS = 5;
-    public static int numChamps;
-
+    private static final Region NA = Region.NORTH_AMERICA;
+    private static final Scanner keyboard = new Scanner(System.in);
+    private static final String MATCH_HISTORY_SUFFIX = "MatchHistory.ser";
+    private static final String RIOT_API_KEY = "RGAPI-0db9c3c9-c440-41cb-8d20-56352b0ee003";
     private static final String SUMM_ERR_MSG = "Load summoner first.";
     private static final String WEIGHT_ERR_MSG = "Train or load a weight first.";
-
-    private static final String MATCH_HISTORY_SUFFIX = "MatchHistory.ser";
     private static final String WEIGHT_SUFFIX = "Weight.ser";
+    private static final String[] roles = {"top", "jungle", "mid", "adc", "support"};
 
-    private static LoLWeight weight = null;
-    private static Summoner summoner = null;
-    private static MatchHistory matchHistory = null;
-    private static LoLMatchHistory processedMatchHistory = null;
-    private static ArrayList<Match> playedOutMatches = new ArrayList<>();
-    private static LoLMatch[] shuffledProcessedMatches;
     private static ArrayList<Double> validationAccuracies = new ArrayList<>();
-
+    private static ArrayList<Match> playedOutMatches = new ArrayList<>();
+    private static DateTime earliestPatchStartTime;
+    private static int lastSubpatchPlayed;
     private static int maxParticipantMatches;
+    private static int numChamps;
     private static int numEpochs;
     private static int numMatchesToConsider;
     private static int numTrainMatches;
-
-    private static final Scanner keyboard = new Scanner(System.in);
+    private static LoLMatch[] shuffledProcessedMatches;
+    private static LoLMatchHistory processedMatchHistory = null;
+    private static LoLWeight weight = null;
+    private static MatchHistory matchHistory = null;
+    private static String currentSeason;
+    private static String earliestPatch;
+    private static Summoner summoner = null;
 
     // The user inputs commands and/or arguments to interact with the program.
     public static void main(String[] args) {
