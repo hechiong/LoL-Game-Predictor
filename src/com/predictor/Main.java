@@ -59,11 +59,11 @@ public class Main {
         earliestPatchStartTime = Patch.named(earliestPatch).get().getStartTime();
 
         for (final Champion champion : Orianna.getChampions()) {
-            champsMap.put(champion.getId(), champion.getName());
             champsArray.add(champion.getName());
+            champsMap.put(champion.getId(), champion.getName());
         }
         champsArray.sort(Comparator.naturalOrder());
-        numChamps = champsMap.size();
+        numChamps = champsArray.size();
 
         System.out.print("Command: ");
         String[] inputs = keyboard.nextLine().toLowerCase().split(" ", 2);
