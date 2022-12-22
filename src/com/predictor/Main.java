@@ -26,8 +26,6 @@ public class Main {
     private static final Region NA = Region.NORTH_AMERICA;
     private static final Scanner keyboard = new Scanner(System.in);
     private static final String MATCH_HISTORY_SUFFIX = "MatchHistory.ser";
-    private static final String SUMM_ERR_MSG = "Load summoner first.";
-    private static final String WEIGHT_ERR_MSG = "Train or load a weight first.";
     private static final String WEIGHT_SUFFIX = "Weight.ser";
     private static final String[] roles = {"top", "jungle", "mid", "adc", "support"};
 
@@ -181,14 +179,14 @@ public class Main {
     // Throws an error if there's no summoner loaded.
     private static void checkIfNullSummoner() throws NullSummonerException {
         if (summoner == null) {
-            throw new NullSummonerException(SUMM_ERR_MSG);
+            throw new NullSummonerException();
         }
     }
 
     // Throws an error if the weight is null.
     private static void checkIfNullWeight() throws NullWeightException {
         if (weight == null) {
-            throw new NullWeightException(WEIGHT_ERR_MSG);
+            throw new NullWeightException();
         }
     }
 
