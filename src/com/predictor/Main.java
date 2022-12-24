@@ -318,7 +318,7 @@ public class Main {
                 }
 
                 System.out.println(
-                        getLoadedSummonerChampWinRate(champ, null, side));
+                        getLoadedSummonerChampWinRate(champ, side, null));
             }
         } else {
             System.out.println("No summoner is loaded.");
@@ -354,11 +354,11 @@ public class Main {
                 + " and " + numRemakes + " remakes were found.");
     }
 
-    // Returns the loaded summoner's win rate on the champion on some
+    // Returns the loaded summoner's win rate on a champion on some
     // side coming into the match given their match history, or returns
-    // -1 if the match is not null and not in their match history.
+    // -1 if the match isn't null but not in their match history.
     private static double getLoadedSummonerChampWinRate(
-            String champion, Match match, String side)
+            String champion, String side, Match match)
             throws NullSummonerException {
         LoLMatch lolMatch;
         String champ;
@@ -429,7 +429,7 @@ public class Main {
                     "determined.");
             return -1;
         } else if (s.equals(summoner)) {
-            return getLoadedSummonerChampWinRate(champion, match, side);
+            return getLoadedSummonerChampWinRate(champion, side, match);
         }
 
         mh = s.matchHistory()
