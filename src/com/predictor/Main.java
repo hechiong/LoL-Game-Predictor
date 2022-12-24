@@ -374,6 +374,8 @@ public class Main {
         checkIfNullSummoner();
 
         if (match != null) {
+            matchId = match.getId();
+
             if (!processedMatchHistory.contains(match)) {
                 System.out.println("Match " + matchId + " isn't in "
                         + summoner.getName() + "'s match history, so this "
@@ -381,7 +383,6 @@ public class Main {
                         + champion + ".");
                 return -1;
             }
-            matchId = match.getId();
         }
 
         for (int i = 0; i < processedMatchHistory.size() && !isFinished; i++) {
@@ -394,7 +395,7 @@ public class Main {
                 isOnCorrectSide = !lolMatch.isAllyBlueSide();
             }
 
-            if (matchId == lolMatch.getMatchId()) {
+            if (lolMatch.getMatchId() == matchId) {
                 isFinished = true;
             } else {
                 if (champion.equals(champ) && isOnCorrectSide) {
