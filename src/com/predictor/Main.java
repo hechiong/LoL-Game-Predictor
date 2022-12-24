@@ -398,11 +398,11 @@ public class Main {
             if (lolMatch.getMatchId() == matchId) {
                 isFinished = true;
             } else {
-                if (champion.equals(champ) && isOnCorrectSide) {
+                if (champ.equals(champion) && isOnCorrectSide) {
                     if (lolMatch.isAllyWinner()) {
-                        wins++;
+                        wins += 1;
                     }
-                    games++;
+                    games += 1;
                 }
             }
         }
