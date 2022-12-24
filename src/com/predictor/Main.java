@@ -18,6 +18,8 @@ import org.joda.time.DateTime;
 
 public class Main {
 
+    private static final ArrayList<String> alphanumericLowercasedChamps
+            = new ArrayList<>();
     private static final ArrayList<String> champsArray = new ArrayList<>();
     private static final ArrayList<String> patchesPlayed = new ArrayList<>();
     private static final HashMap<Integer, String> champsMap = new HashMap<>();
@@ -62,6 +64,10 @@ public class Main {
         }
         champsArray.sort(Comparator.naturalOrder());
         numChamps = champsArray.size();
+
+        for (String champ : champsArray) {
+            alphanumericLowercasedChamps.add(toAlphanumericLowercase(champ));
+        }
 
         System.out.print("Command: ");
         String[] inputs = keyboard.nextLine().toLowerCase().split(" ", 2);
@@ -260,16 +266,19 @@ public class Main {
 
     // Prints information about the summoner.
     private static void displaySummonerInfo() throws NullSummonerException {
-        String champ = "", name, side = "", userInput;
+        int champIndex;
+        String champ = "";
+        String name;
+        String side = "";
+        String userInput;
 
-        if (summoner == null) {
-            System.out.println("No summoner is loaded.");
-        } else {
+        if (summoner != null) {
             name = summoner.getName();
 
             System.out.println("Summoner ID: " + summoner.getId());
+            System.out.println("Summoner account ID: "
+                    + summoner.getAccountId());
             System.out.println("Summoner PUUID: " + summoner.getPuuid());
-            System.out.println("Summoner account ID: " + summoner.getAccountId());
             System.out.println("Summoner name: " + name);
             System.out.println("Summoner level: " + summoner.getLevel());
             System.out.println("Summoner region: " + summoner.getRegion());
@@ -277,7 +286,7 @@ public class Main {
                     + summoner.getChampionMasteryScore().getScore());
 
             System.out.print("Want to see " + name + "'s win rate on a "
-                    + "champion ('yes'/'no')? ");
+                    + "champion ('yes' or 'no')? ");
             userInput = keyboard.nextLine().toLowerCase();
             while (!userInput.equals("yes") && !userInput.equals("no")) {
                 System.out.print("Choose 'yes' or 'no' to see " + name + "'s"
@@ -286,18 +295,19 @@ public class Main {
             }
 
             if (userInput.equals("yes")) {
-                while (!champsMap.containsValue(champ)) {
+                while (!alphanumericLowercasedChamps.contains(champ)) {
                     System.out.print("Champion: ");
                     champ = toAlphanumericLowercase(keyboard.nextLine());
 
-                    if (!champsMap.containsValue(champ)) {
+                    if (!alphanumericLowercasedChamps.contains(champ)) {
                         System.out.println(champ + " is an invalid champion.");
                     }
                 }
+                champIndex = alphanumericLowercasedChamps.indexOf(champ);
 
                 while (!side.equals("Blue") && !side.equals("Red")
                         && !side.equals("Either")) {
-                    System.out.print("Side ('Blue', 'Red', 'Either'): ");
+                    System.out.print("Side ('Blue', 'Red', or 'Either'): ");
                     side = toCapitalizeLowercase(keyboard.nextLine());
 
                     if (!side.equals("Blue") && !side.equals("Red")
@@ -309,6 +319,8 @@ public class Main {
                 System.out.println(
                         getLoadedSummonerChampWinRate(champ, null, side));
             }
+        } else {
+            System.out.println("No summoner is loaded.");
         }
     }
 
