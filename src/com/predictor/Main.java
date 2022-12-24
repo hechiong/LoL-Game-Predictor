@@ -327,10 +327,10 @@ public class Main {
 
     // Prints information about the weight.
     private static void displayWeightInfo() {
-        if (weight == null) {
-            System.out.println("Weight is null.");
-        } else {
+        if (weight != null) {
             System.out.println(weight);
+        } else {
+            System.out.println("Weight is null.");
         }
     }
 
