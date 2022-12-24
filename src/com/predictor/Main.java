@@ -346,7 +346,7 @@ public class Main {
             if (!match.isRemake()) {
                 playedOutMatches.add(match);
             } else {
-                numRemakes++;
+                numRemakes += 1;
             }
         }
 
