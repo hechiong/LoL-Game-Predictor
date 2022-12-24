@@ -308,7 +308,7 @@ public class Main {
                 while (!side.equals("Blue") && !side.equals("Red")
                         && !side.equals("Either")) {
                     System.out.print("Side ('Blue', 'Red', or 'Either'): ");
-                    side = toCapitalizeLowercase(keyboard.nextLine());
+                    side = toCapitalizedLowercase(keyboard.nextLine());
 
                     if (!side.equals("Blue") && !side.equals("Red")
                             && !side.equals("Either")) {
@@ -775,7 +775,7 @@ public class Main {
         if (weight.getTeamType() != 1) {
             while (!side.equals("Blue") && !side.equals("Red")) {
                 System.out.print(team + " team's side ('Blue'/'Red'): ");
-                side = toCapitalizeLowercase(keyboard.nextLine());
+                side = toCapitalizedLowercase(keyboard.nextLine());
 
                 if (!side.equals("Blue") && !side.equals("Red")) {
                     System.out.println(side + " is an invalid side.");
@@ -1383,7 +1383,7 @@ public class Main {
 
     // Returns the String input with its first character
     // in uppercase and the rest of it in lowercase.
-    private static String toCapitalizeLowercase(String s) {
+    private static String toCapitalizedLowercase(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
