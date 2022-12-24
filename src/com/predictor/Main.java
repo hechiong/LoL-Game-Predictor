@@ -222,6 +222,7 @@ public class Main {
     private static void displayMatch() throws NullSummonerException {
         int index = -1;
         int pmhSize;
+
         checkIfNullSummoner();
 
         pmhSize = processedMatchHistory.size();
@@ -248,6 +249,7 @@ public class Main {
     // Prints information about the summoner's match history.
     private static void displayMatchHistoryInfo() throws NullSummonerException {
         String userInput;
+
         checkIfNullSummoner();
 
         System.out.println(processedMatchHistory);
@@ -339,6 +341,7 @@ public class Main {
     // matches that were played out and remade respectively.
     private static void extractMatches() throws NullSummonerException {
         int numRemakes = 0;
+
         checkIfNullSummoner();
 
         playedOutMatches = new ArrayList<>();
@@ -360,12 +363,14 @@ public class Main {
     private static double getLoadedSummonerChampWinRate(
             String champion, String side, Match match)
             throws NullSummonerException {
-        LoLMatch lolMatch;
-        String champ;
         boolean isFinished = false;
         boolean isOnCorrectSide = true;
-        int games = 0, wins = 0;
+        int games = 0;
+        int wins = 0;
+        LoLMatch lolMatch;
         long matchId = 0;
+        String champ;
+
         checkIfNullSummoner();
 
         if (match != null) {
@@ -421,6 +426,7 @@ public class Main {
         boolean peakAll = match == null || maxParticipantMatches == 0;
         int games = 0, wins = 0;
         int lastIndex, startIndex = 0;
+
         checkIfNullSummoner();
 
         if (!s.exists()) {
@@ -540,6 +546,7 @@ public class Main {
     // Loads the summoner's processed match history if it exists.
     private static void loadMatchHistory() throws NullSummonerException {
         String mhFileName, playerPuuid;
+
         checkIfNullSummoner();
 
         mhFileName = summoner.getName() + MATCH_HISTORY_SUFFIX;
@@ -669,6 +676,7 @@ public class Main {
         int pmhSize;
         int startIndex;
         long t0, t1;
+
         checkIfNullSummoner();
 
         pmhSize = processedMatchHistory.size();
@@ -877,6 +885,7 @@ public class Main {
         FileOutputStream outMatchesFile;
         ObjectOutputStream outMatches;
         String matchesFileName;
+
         checkIfNullSummoner();
 
         matchesFileName = summoner.getName() + MATCH_HISTORY_SUFFIX;
@@ -1208,6 +1217,7 @@ public class Main {
         String userInput;
         int pmhSize;
         numMatchesToConsider = 0;
+
         checkIfNullSummoner();
 
         pmhSize = processedMatchHistory.size();
@@ -1301,6 +1311,7 @@ public class Main {
     // Sets up the summoner's match history of processed matches.
     private static void setUpProcessedMatches() throws NullSummonerException {
         String userInput;
+
         checkIfNullSummoner();
 
         if (processedMatchHistory.isEmpty()) {
@@ -1394,6 +1405,7 @@ public class Main {
             throws FnException, NullSummonerException, NullWeightException {
         LoLMatch lastProcessedMatch;
         String lastPatch, userInput = "yes";
+
         checkIfNullSummoner();
 
         setUpMaxParticipantMatches();
