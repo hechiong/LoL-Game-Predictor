@@ -304,6 +304,7 @@ public class Main {
                     }
                 }
                 champIndex = alphanumericLowercasedChamps.indexOf(champ);
+                champ = champsArray.get(champIndex);
 
                 while (!side.equals("Blue") && !side.equals("Red")
                         && !side.equals("Either")) {
