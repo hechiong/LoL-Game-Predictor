@@ -419,14 +419,16 @@ public class Main {
     private static double getSummonerChampWinRate(
             Summoner s, String champion, String side, Match match)
             throws NullSummonerException {
+        boolean isOnCorrectSide = true;
+        boolean peekAll = match == null || maxParticipantMatches == 0;
         Champion c;
         DateTime dt = null;
+        int games = 0;
+        int lastIndex;
+        int startIndex = 0;
+        int wins = 0;
         MatchHistory mh;
         String champPlayed;
-        boolean isOnCorrectSide = true;
-        boolean peakAll = match == null || maxParticipantMatches == 0;
-        int games = 0, wins = 0;
-        int lastIndex, startIndex = 0;
 
         checkIfNullSummoner();
 
@@ -466,7 +468,7 @@ public class Main {
             }
         }
 
-        if (peakAll) {
+        if (peekAll) {
             lastIndex = mh.size();
         } else {
             lastIndex = maxParticipantMatches + startIndex;
