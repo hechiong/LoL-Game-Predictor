@@ -413,11 +413,11 @@ public class Main {
         return (double) wins / games;
     }
 
-    // Returns the summoner's win rate on the champion on
+    // Returns the summoner's win rate on a champion on
     // some side coming into the match, or returns -1 if
-    // the match is not null and not in their match history.
+    // the match isn't null but not in their match history.
     private static double getSummonerChampWinRate(
-            Summoner s, String champion, Match match, String side)
+            Summoner s, String champion, String side, Match match)
             throws NullSummonerException {
         Champion c;
         DateTime dt = null;
@@ -711,7 +711,7 @@ public class Main {
                         System.out.println("For summoner " + s.getName()
                                 + " in match " + (pmhSize + 1) + ":");
                         champWinRate = getSummonerChampWinRate(
-                                s, champ, match, "either");
+                                s, champ, "either", match);
                         System.out.println(s.getName() + "'s win rate on "
                                 + champ + ": " + champWinRate);
 
