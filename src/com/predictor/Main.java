@@ -441,6 +441,7 @@ public class Main {
             return getLoadedSummonerChampWinRate(champion, side, match);
         }
 
+        // Logic for summoners who played with or against the loaded summoner
         mh = s.matchHistory()
                 .withQueues(Queue.RANKED_SOLO)
                 .withStartTime(earliestPatchStartTime).get();
