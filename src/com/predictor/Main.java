@@ -367,9 +367,7 @@ public class Main {
         boolean isOnCorrectSide = true;
         int games = 0;
         int wins = 0;
-        LoLMatch lolMatch;
         long matchId = 0;
-        String champ;
 
         checkIfNullSummoner();
 
@@ -386,8 +384,8 @@ public class Main {
         }
 
         for (int i = 0; i < processedMatchHistory.size() && !isFinished; i++) {
-            lolMatch = processedMatchHistory.get(i);
-            champ = lolMatch.getAllyChamp(lolMatch.getPlayerIndex());
+            LoLMatch lolMatch = processedMatchHistory.get(i);
+            String champ = lolMatch.getAllyChamp(lolMatch.getPlayerIndex());
 
             if (side.equals("Blue")) {
                 isOnCorrectSide = lolMatch.isAllyBlueSide();
@@ -472,7 +470,11 @@ public class Main {
         if (peekAll) {
             lastIndex = mh.size();
         } else {
-            lastIndex = maxParticipantMatches + startIndex;
+            lastIndex = startIndex + maxParticipantMatches;
+        }
+
+        while (games < maxParticipantMatches && games < mh.size()) {
+            q
         }
 
         for (int i = startIndex; i < lastIndex; i++) {
