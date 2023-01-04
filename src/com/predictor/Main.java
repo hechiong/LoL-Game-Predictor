@@ -419,14 +419,12 @@ public class Main {
             throws NullSummonerException {
         boolean isOnCorrectSide = true;
         boolean peekAll = match == null || maxParticipantMatches == 0;
-        Champion c;
         DateTime dt = null;
         int games = 0;
         int lastIndex;
         int startIndex = 0;
         int wins = 0;
         MatchHistory mh;
-        String champPlayed;
 
         checkIfNullSummoner();
 
@@ -454,10 +452,11 @@ public class Main {
                     .withQueues(Queue.RANKED_SOLO)
                     .withStartTime(earliestPatchStartTime)
                     .withChampions(Champion.named(champion).get()).get();
+            lastIndex = mh.size();
 
             if (match != null) {
-                c = match.getParticipants().find(s).getChampion();
-                champPlayed = champsMap.get(c.getId());
+                Champion c = match.getParticipants().find(s).getChampion();
+                String champPlayed = champsMap.get(c.getId());
 
                 if (champPlayed.equals(champion)) {
                     startIndex = mh.indexOf(match) + 1;
@@ -467,14 +466,16 @@ public class Main {
             }
         }
 
-        if (peekAll) {
-            lastIndex = mh.size();
-        } else {
-            lastIndex = startIndex + maxParticipantMatches;
+        if (dt != null && mh.size() > 0) {
+            Match m = mh.get(startIndex);
+
+            while (dt.compareTo(m.getCreationTime()) <= 0 && startIndex < mh.size()) {
+                m = mh.get(startIndex++);
+            }
         }
 
-        while (games < maxParticipantMatches && games < mh.size()) {
-            q
+        if (!peekAll && startIndex + maxParticipantMatches < mh.size()) {
+            lastIndex = startIndex + maxParticipantMatches;
         }
 
         for (int i = startIndex; i < lastIndex; i++) {
@@ -488,19 +489,19 @@ public class Main {
                 isOnCorrectSide = t.getSide().equals(Side.RED);
             }
 
-            if (dt == null || dt.compareTo(m.getCreationTime()) > 0) {
-                if (!m.isRemake() && isOnCorrectSide) {
-                    System.out.print("Did " + s.getName()  + " win as "
-                            + champion + " in match " + m.getId() + " on "
-                            + side + " side? ");
-                    if (t.isWinner()) {
-                        wins++;
-                        System.out.println("yes");
-                    } else {
-                        System.out.println("no");
-                    }
-                    games++;
+            if (!m.isRemake() && isOnCorrectSide) {
+                System.out.print("Did " + s.getName()  + " win as "
+                        + champion + " in match " + m.getId() + " on "
+                        + side + " side? ");
+
+                if (t.isWinner()) {
+                    wins += 1;
+                    System.out.println("yes");
+                } else {
+                    System.out.println("no");
                 }
+                
+                games += 1;
             }
         }
 
