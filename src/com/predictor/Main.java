@@ -514,6 +514,10 @@ public class Main {
     // Initializes a new weight and list of validation accuracies.
     private static void initWeight()
             throws FnException, NullWeightException {
+        // initialize new DataNode sample with 1 row &
+        // #cols depending on feature type and team type,
+        // and then, eventually initialize new neural network (maybe make new method?)
+
         String featType;
         int teamType;
         validationAccuracies = new ArrayList<>();
@@ -532,6 +536,50 @@ public class Main {
                 + "integer between 1-5 where 1 considers teams solely by "
                 + "alliance, 5 considers teams solely by color, and any "
                 + "integer in between uses a mix of the two)? ");
+        teamType = Integer.parseInt(keyboard.nextLine());
+        while (!LoLWeight.isValidTeamType(teamType)) {
+            System.out.print("Choose any integer between 1-5 to consider teams"
+                    + " in a certain way: ");
+            teamType = Integer.parseInt(keyboard.nextLine());
+        }
+
+        if (featType.equals("cwr")) {
+            weight = new LoLWeight(LoLWeight.FeaturesType.CWR, teamType);
+        } else if (featType.equals("tc")) {
+            weight = new LoLWeight(LoLWeight.FeaturesType.TC, teamType);
+        } else {
+            weight = new LoLWeight(LoLWeight.FeaturesType.CWRTC, teamType);
+        }
+
+        setUpModel();
+    }
+
+    // Initializes a new neural network and list of validation accuracies.
+    private static void initializeNeuralNetwork()
+            throws FnException, NullWeightException {
+        // initialize new DataNode sample with 1 row &
+        // #cols depending on feature type and team type,
+        // and then, eventually initialize new neural network (maybe make new method?)
+
+        DataNode sample;
+        int teamType;
+        String featType;
+        validationAccuracies = new ArrayList<>();
+
+        System.out.print("Features to consider (champion win rates ('cwr'), "
+                + "team composition ('tc'), or 'both'): ");
+        featType = keyboard.nextLine().toLowerCase();
+        while (!featType.equals("cwr") && !featType.equals("tc")
+                && !featType.equals("both")) {
+            System.out.print("Choose 'cwr', 'tc', or 'both' for features to "
+                    + "consider: ");
+            featType = keyboard.nextLine().toLowerCase();
+        }
+
+        System.out.print("How should this weight consider teams (enter an "
+                + "integer between 1-5 where 1 considers teams solely by "
+                + "alliance, 5 considers teams solely by color, and any "
+                + "integer in between uses an appropriate mix of the two)? ");
         teamType = Integer.parseInt(keyboard.nextLine());
         while (!LoLWeight.isValidTeamType(teamType)) {
             System.out.print("Choose any integer between 1-5 to consider teams"

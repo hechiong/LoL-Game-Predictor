@@ -241,7 +241,7 @@ public class NeuralNetwork implements Serializable {
                         + "vector must match the size of the sample node.");
             }
 
-            sampleNode.setRow(0, sample);
+            setSample(sample);
 
             forwardPass();
             backwardPass();
@@ -260,6 +260,11 @@ public class NeuralNetwork implements Serializable {
     // Sets the learning rate this neural network uses.
     public void setLearningRate(double learningRate) {
         this.learningRate = learningRate;
+    }
+
+    // Sets the sample to be used for this neural network.
+    public void setSample(Vec sample) {
+        sampleNode.setRow(0, sample);
     }
 
     // Updates the parameters of this neural network.
