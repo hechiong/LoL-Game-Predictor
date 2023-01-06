@@ -92,23 +92,6 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         return index;
     }
 
-    // Returns a copy of this LoLWeight.
-    public LoLWeight copy() {
-        LoLWeight w = new LoLWeight(featType, teamType);
-
-        w.setBatchSize(batchSize);
-        w.setLearningRate(learningRate);
-        w.setLossFn(lossFn);
-        w.setModel(model);
-        w.setName(name);
-
-        for (int i = 0; i < length(); i++) {
-            w.set(i, get(i));
-        }
-
-        return w;
-    }
-
     // Returns the String representation of displaying
     // the type of features this weight has.
     private String featTypeString() {
