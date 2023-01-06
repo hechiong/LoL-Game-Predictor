@@ -71,9 +71,9 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         assert start <= end: "The start index mustn't be greater than the end "
                 + "index.";
 
-        String prevElem = element;
-        String currElem;
         int index = (end + start) / 2;
+        String currElem;
+        String prevElem = element;
 
         if (start == end) {
             return start;
