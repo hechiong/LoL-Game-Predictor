@@ -15,7 +15,7 @@ public class LoLNeuralNetwork extends NeuralNetwork {
     private final FeaturesType featType;
     private final int teamType;
 
-    // Constructor for a LoLWeight associated with some
+    // Constructor for a LoLNeuralNetwork associated with some
     // type of features and some way of considering teams.
     public LoLNeuralNetwork(int[] hiddenSizes, DataNode sample, DataNode outcome,
                             String hiddenActFn, String lossFn, String outputActFn,
@@ -93,7 +93,7 @@ public class LoLNeuralNetwork extends NeuralNetwork {
     }
 
     // Returns the String representation of displaying
-    // the type of features this weight has.
+    // the type of features this neural network has.
     private String featTypeString() {
         String featTypeStr = "Type of features: ";
 
@@ -111,12 +111,12 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         return featTypeStr;
     }
 
-    // Returns the type of features this weight has.
+    // Returns the type of features this neural network has.
     public FeaturesType getFeatureType() {
         return featType;
     }
 
-    // Returns how this weight considers teams.
+    // Returns how this neural network considers teams.
     public int getTeamType() {
         return teamType;
     }
@@ -126,10 +126,10 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         return teamType >= 1 && teamType <= 5;
     }
 
-    // Returns the String representation of
-    // displaying how this weight considers teams.
+    // Returns the String representation of displaying
+    // how this neural network considers teams.
     private String teamTypeString() {
-        String teamTypeStr = "This weight considers teams by ";
+        String teamTypeStr = "This neural network considers teams by ";
 
         switch (teamType) {
             case 1:
@@ -151,7 +151,7 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         return teamTypeStr;
     }
 
-    // Returns the String representation of this weight.
+    // Returns the String representation of this neural network.
     public String toString() {
         String featTypeStr = featTypeString() + "\n";
         String teamTypeStr = teamTypeString() + "\n";
@@ -159,13 +159,14 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         return super.toString() + "\n" + featTypeStr + teamTypeStr;
     }
 
-    // Updates this weight with champions that have been added or changed.
+    // Updates this neural network with
+    // champions that have been added or changed.
     public void update() {
         updateWithChangedChamps();
         updateWithAddedChamps();
     }
 
-    // Updates this weight with new champions if any have been added.
+    // Updates this neural network with new champions if any have been added.
     private void updateWithAddedChamps() {
         String champName;
         int champId, champIndex;
@@ -184,7 +185,8 @@ public class LoLNeuralNetwork extends NeuralNetwork {
         }
     }
 
-    // Updates this weight with champions if any whose names have changed.
+    // Updates this neural network with
+    // champions if any whose names have changed.
     private void updateWithChangedChamps() {
         HashMap<Integer, String> allChampsMap = allChampsMap();
         String champName, updatedChampName;
