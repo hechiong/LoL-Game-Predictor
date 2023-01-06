@@ -112,7 +112,7 @@ public class LoLNeuralNetwork extends NeuralNetwork {
     }
 
     // Returns the type of features this weight has.
-    public FeaturesType getFeatType() {
+    public FeaturesType getFeatureType() {
         return featType;
     }
 
