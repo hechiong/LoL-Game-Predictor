@@ -89,6 +89,24 @@ public abstract class Node {
         return m[row].copy();
     }
 
+    // Inserts an empty row at a specified row index.
+    public void insertRow(int row) {
+        Vec emptyRow = new Vec(numCols());
+        Vec[] newM = new Vec[numRows() + 1];
+
+        for (int i = 0; i < row; i++) {
+            newM[i] = getRow(i);
+        }
+
+        newM[row] = emptyRow;
+
+        for (int i = row + 1; i < newM.length; i++) {
+            newM[i] = getRow(i - 1);
+        }
+
+        m = newM;
+    }
+
     // Returns whether this node is a child of the node or not.
     public boolean isChildOf(FunctionNode n) {
         return parents.contains(n);

@@ -220,6 +220,12 @@ public class NeuralNetwork implements Serializable {
         return wtInit.toString();
     }
 
+    // Inserts an empty row at a specified row
+    // index into a specified parameter node.
+    public void insertParamRow(int paramIndex, int rowIndex) {
+        paramNodes[paramIndex].insertRow(rowIndex);
+    }
+
     // Puts a gradient in the gradient cache.
     private void putGradient(FunctionNode parentNode, Node childNode)
             throws FnException, NodeException {

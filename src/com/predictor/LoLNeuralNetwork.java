@@ -169,7 +169,17 @@ public class LoLNeuralNetwork extends NeuralNetwork {
     // Updates this neural network with new champions if any have been added.
     private void updateWithAddedChamps() {
         String champName;
-        int champId, champIndex;
+        int champId;
+        int champIndex;
+        int numInsertions = 2;
+
+        if (getFeatureType() == FeaturesType.CWRTC) {
+            numInsertions *= 2;
+        }
+
+        if (getTeamType() == 3) {
+            numInsertions *= 2;
+        }
 
         for (final Champion champion : Champions.get()) {
             champId = champion.getId();
@@ -180,7 +190,10 @@ public class LoLNeuralNetwork extends NeuralNetwork {
                         champsArray, 0, champsArray.size(), champName);
                 champsArray.add(champIndex, champName);
                 champsMap.put(champion.getId(), champion.getName());
-                shift(champIndex, 1);
+
+                for (int i = 0; i < numInsertions; i++) {
+                    insertParamRow(0, i * champsMap.size() + i + champIndex);
+                }
             }
         }
     }
